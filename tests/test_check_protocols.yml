@@ -1,0 +1,33 @@
+- case: correct
+  main: |
+    from pyeo import elegant
+    from typing import Protocol
+
+    class House(Protocol):
+        def area(self) -> int: ...
+
+    @elegant
+    class PgHouse(House):
+
+        def area(self) -> int:
+            return 10
+
+- case: classes_without_protocol
+  main: |
+    from pyeo import elegant
+
+    @elegant
+    class PgHouse(object):
+
+        def area(self) -> int:
+            return 10
+
+    @elegant
+    class HttpHouse:
+
+        def area(self) -> int:
+            return 5
+  
+  out: |
+    main:4: error: Class 'PgHouse' does not implement a Protocol.  [misc]
+    main:10: error: Class 'HttpHouse' does not implement a Protocol.  [misc]
