@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "pyeo"
+version = "0.0.1-alpha1"
+description = "Pyeo is an advanced static analysis tool tailored specifically to enforce the principles advocated by Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure that your Python code adheres to the core tenets of elegance, simplicity, and maintainability."
+authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+mypy = "^1.0"
+
+[tool.poetry.group.dev.dependencies]
+wemake-python-styleguide = "0.17.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,5 +1,7 @@
 # pyeo
 
+[![wemake-python-styleguide](https://img.shields.io/badge/style-wemake-000000.svg)](https://github.com/wemake-services/wemake-python-styleguide)
+
 Pyeo  is an advanced static analysis tool tailored specifically to enforce the principles advocated by
 Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure
 that your Python code adheres to the core tenets of elegance, simplicity, and maintainability.
