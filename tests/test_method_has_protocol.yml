@@ -1,0 +1,55 @@
+- case: correct
+  main: |
+    from pyeo import elegant
+    from typing import Protocol
+
+    class House(Protocol):
+        def area(self) -> int: ...
+
+    @elegant
+    class PgHouse(House):
+
+        def area(self) -> int:
+            return 10
+
+- case: method_without_protocol
+  main: |
+    from pyeo import elegant
+    from typing import Protocol
+
+    class House(Protocol):
+        def area(self) -> int: ...
+
+    @elegant
+    class HttpHouse(House):
+
+        def area(self) -> int:
+            return 5
+
+        def extra(self) -> str:
+            return '1'
+  
+  out: |
+    main:13: error: Class 'HttpHouse' have public extra method 'extra' without protocol.  [misc]
+
+- case: implement_two_protocol
+  main: |
+    from pyeo import elegant
+    from typing import Protocol
+
+    class House(Protocol):
+        def area(self) -> int: ...
+
+    class Extra(Protocol):
+        def extra(self) -> str: ...
+
+    @elegant
+    class HttpHouse(House, Extra):
+
+        def area(self) -> int:
+            return 5
+
+        def extra(self) -> str:
+            return '1'
+  
+  out: aewf
