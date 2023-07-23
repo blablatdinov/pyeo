@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from mypy.plugin import Plugin
 
+from pyeo.features.final_object import FinalClassFeature
 from pyeo.features.method_has_protocol import EachMethodHasProtocolFeature
 from pyeo.features.object_has_protocol import ObjectHasProtocolFeature
 from pyeo.features.protocol_method_code_free import ProtocolMethodCodeFreeFeature
@@ -39,6 +40,7 @@ def analyze(ctx):
     if not ObjectHasProtocolFeature().analyze(ctx):
         return True
     EachMethodHasProtocolFeature().analyze(ctx)
+    FinalClassFeature().analyze(ctx)
     return True
 
 
