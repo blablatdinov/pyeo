@@ -34,6 +34,6 @@ When you use `attrs.define(frozen=True)` for a class, all its attributes become 
 
 Detect using ORM or ActiveRecord tools on project by design/code review
 
-- [ ] No implementation inheritance ([why?](http://www.yegor256.com/2017/01/31/decorating-envelopes.html) and [why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
+- [x] No implementation inheritance ([why?](http://www.yegor256.com/2017/01/31/decorating-envelopes.html) and [why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
 
 Each `@elegant` object must be `typing.final`
