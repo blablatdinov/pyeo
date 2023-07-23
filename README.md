@@ -6,6 +6,32 @@ Pyeo  is an advanced static analysis tool tailored specifically to enforce the p
 Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure
 that your Python code adheres to the core tenets of elegance, simplicity, and maintainability.
 
+```bash
+pip install eo-styleguide
+```
+
+Simple example of usage:
+
+```python
+from typing import Protocol, final
+
+import attrs
+from pyeo import elegant
+
+
+class House(Protocol):
+    def area(self) -> int: ...
+
+
+@elegant
+@final
+@attrs.define(frozen=True)
+class HttpHouse(House):
+
+    def area(self) -> int:
+        return 10
+```
+
 - [x] ~~No null~~ ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
 
 Mypy helps prevent AttributeError and other type-related errors by providing static type checking for Python code. It allows specifying variable types, function arguments, and return types to catch potential type issues before the program runs. By using Mypy, developers can identify and fix problems related to attribute access and other type mismatches, leading to improved code quality and easier maintenance.
