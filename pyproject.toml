@@ -15,7 +15,8 @@ mypy = "^1.0"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = "0.17.0"
-pytest-mypy-plugins = "^2.0.0"
+pytest-mypy-plugins = "2.0.0"
+flake8-copyright = "0.2.4"
 
 [build-system]
 requires = ["poetry-core"]

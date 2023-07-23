@@ -20,45 +20,23 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.plugin import Plugin
-
-from pyeo.features.method_has_protocol import EachMethodHasProtocolFeature
-from pyeo.features.object_has_protocol import ObjectHasProtocolFeature
-from pyeo.features.protocol_method_code_free import ProtocolMethodCodeFreeFeature
 
 
-def analyze(ctx):
-    """Features controller.
+class ObjectHasProtocolFeature(object):
+    """Check object has protocol."""
 
-    :param ctx: mypy context
-    :return: bool
-    """
-    if ctx.cls.removed_base_type_exprs and ctx.cls.removed_base_type_exprs[0].fullname == 'typing.Protocol':
-        ProtocolMethodCodeFreeFeature().analyze(ctx)
-        return True
-    if not ObjectHasProtocolFeature().analyze(ctx):
-        return True
-    EachMethodHasProtocolFeature().analyze(ctx)
-    return True
+    def analyze(self, ctx) -> bool:
+        """Analyzing.
 
-
-class CustomPlugin(Plugin):
-    """Our plugin for mypy."""
-
-    def get_class_decorator_hook_2(self, fullname: str):  # noqa: WPS114 mypy api
-        """Hook for find elegant objects.
-
-        :param fullname: str
-        :return: analyze
+        :param ctx: mypy context
+        :return: bool
         """
-        if fullname == 'pyeo.elegant':
-            return analyze
-
-
-def plugin(version: str):
-    """Plugin entrypoint.
-
-    :param version: str
-    :return: CustomPlugin
-    """
-    return CustomPlugin
+        if not ctx.cls.base_type_exprs:
+            ctx.api.fail("Class '{0}' does not implement a Protocol.".format(ctx.cls.name), ctx.cls)
+            return False
+        base_type_exprs = ctx.cls.base_type_exprs[0]
+        for node in base_type_exprs.node.mro:
+            if node.is_protocol:
+                return True
+        ctx.api.fail("Class '{0}' does not implement a Protocol.".format(ctx.cls.name), ctx.cls)
+        return False

@@ -20,10 +20,3 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-
-
-def elegant(class_):
-    """Decorator for elegant objects and protocols.
-
-    :param class_: decorated class
-    """
