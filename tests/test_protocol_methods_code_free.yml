@@ -1,0 +1,48 @@
+- case: correct
+  main: |
+    from pyeo import elegant
+    from typing import Protocol
+
+    @elegant
+    class House(Protocol):
+        def area(self) -> int: ...
+
+        def cost(self) -> int:
+            """Method for calculating cost."""
+
+        def sell(self) -> bool:
+            pass
+
+- case: method_has_expr
+  main: |
+    from pyeo import elegant
+    from typing import Protocol
+
+    @elegant
+    class House(Protocol):
+        def area(self) -> int:
+            return 5
+          
+  out: |
+    main:5: error: Protocol 'House' method 'area' has implementation  [misc]
+
+- case: expr_after_docstring_or_path
+  main: |
+    from pyeo import elegant
+    from typing import Protocol
+
+    @elegant
+    class House(Protocol):
+        def area(self) -> int:
+            pass
+            var = 5
+            return var
+
+        def cost(self) -> int:
+            """Method for calculating cost."""
+            var = 100 * self.area()
+            return var
+          
+  out: |
+    main:5: error: Protocol 'House' method 'area' has implementation  [misc]
+    main:5: error: Protocol 'House' method 'cost' has implementation  [misc]
