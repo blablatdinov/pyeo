@@ -1,0 +1,23 @@
+- case: forbid_names
+  parametrized:
+    - suffix: er
+    - suffix: client
+    - suffix: Client
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    @elegant
+    class House(Protocol):
+
+        def area(self) -> int: ...
+
+    @final
+    @elegant
+    class HttpHouse{{ suffix }}(House):
+
+        def area(self) -> int:
+            return 5
+  
+  out: |
+    main:11: error: Class 'HttpHouse{{ suffix }}' has forbidden class name suffix ({{ suffix }}).  [misc]
