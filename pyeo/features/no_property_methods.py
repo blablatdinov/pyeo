@@ -20,11 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.nodes import EllipsisExpr, PassStmt, StrExpr, FuncDef
+from mypy.nodes import EllipsisExpr, PassStmt, StrExpr, FuncDef, Decorator
 
 
-class ProtocolMethodCodeFreeFeature(object):
-    """Check protocol methods code free."""
+class NoPropertyMethodsFeature(object):
+    """Check that class/method has not property methods."""
 
     def analyze(self, ctx) -> bool:  # noqa: WPS231 need in refactor
         """Analyzing.
@@ -32,16 +32,8 @@ class ProtocolMethodCodeFreeFeature(object):
         :param ctx: mypy context
         :return: bool
         """
-        for method in ctx.cls.defs.body:
-            fail_args = ("Protocol '{0}' method '{1}' has implementation".format(ctx.cls.name, method.name), ctx.cls)
-            if not isinstance(method, FuncDef):
-                continue
-            for body_item in method.body.body:
-                if isinstance(body_item, PassStmt):
-                    continue
-                if not hasattr(body_item, 'expr'):  # noqa: WPS421 need in refactor
-                    ctx.api.fail(*fail_args)
-                    continue
-                if not isinstance(body_item.expr, (EllipsisExpr, StrExpr)):
-                    ctx.api.fail(*fail_args)
+        for body_item in ctx.cls.defs.body:
+            fail_args = ("Class '{0}' has property method: '{1}'".format(ctx.cls.name, body_item.name), ctx.cls)
+            if isinstance(body_item, Decorator):
+                ctx.api.fail(*fail_args)
         return True
