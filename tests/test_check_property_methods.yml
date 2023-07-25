@@ -1,0 +1,27 @@
+- case: forbid_names
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    @elegant
+    class House(Protocol):
+
+        def area(self) -> int: ...
+
+        @property
+        def cost(self) -> int: ...
+
+    @final
+    @elegant
+    class HttpHouse(House):
+
+        def area(self) -> int:
+            return 5
+
+        @property
+        def cost(self) -> int:
+            return self.area() * 10
+  
+  out: |
+    main:5: error: Class 'House' has property method: 'cost'  [misc]
+    main:14: error: Class 'HttpHouse' has property method: 'cost'  [misc]
