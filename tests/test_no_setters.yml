@@ -1,6 +1,5 @@
 - case: forbid_names
   main: |
-    import functools
     from pyeo import elegant
     from typing import Protocol, final
 
@@ -12,18 +11,29 @@
         @property
         def cost(self) -> int: ...
 
+        @cost.setter
+        def cost(self, val: int) -> None: ...
+
     @final
     @elegant
     class HttpHouse(House):
 
-        @functools.lru_cache
+        def __init__(self):
+            self._cost = 0
+
         def area(self) -> int:
             return 5
 
         @property
         def cost(self) -> int:
+            if self._cost:
+                return self._cost
             return self.area() * 10
+
+        @cost.setter
+        def cost(self, val: int) -> None:
+            self._cost = 1000
   
   out: |
-    main:6: error: Class 'House' has property method: 'cost'  [misc]
-    main:15: error: Class 'HttpHouse' has property method: 'cost'  [misc]
+    main:5: error: Class 'House' has setter method: 'cost'  [misc]
+    main:17: error: Class 'HttpHouse' has setter method: 'cost'  [misc]

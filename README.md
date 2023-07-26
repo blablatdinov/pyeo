@@ -38,7 +38,7 @@ Mypy helps prevent AttributeError and other type-related errors by providing sta
 
 - [ ] No code in constructors ([why?](http://www.yegor256.com/2015/05/07/ctors-must-be-code-free.html))
 
-- [ ] No getters and setters ([why?](http://www.yegor256.com/2014/09/16/getters-and-setters-are-evil.html))
+- [x] No getters and setters ([why?](http://www.yegor256.com/2014/09/16/getters-and-setters-are-evil.html))
 
 - [x] No mutable objects ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html))
 

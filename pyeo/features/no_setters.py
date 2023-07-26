@@ -20,11 +20,27 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from mypy.nodes import Decorator, OverloadedFuncDef
 
 
-def elegant(class_):
-    """Decorator for elegant objects and protocols.
+class NoSettersFeature(object):
+    """Check that class/method has not setters."""
 
-    :param class_: decorated class
-    """
-    return class_
+    def analyze(self, ctx) -> bool:
+        """Analyzing.
+
+        :param ctx: mypy context
+        :return: bool
+        """
+        for body_item in ctx.cls.defs.body:
+            if not isinstance(body_item, OverloadedFuncDef):
+                continue
+            for decorator in body_item.items:
+                if not decorator.decorators:
+                    continue
+                for dec in decorator.decorators:
+                    if dec.name != 'setter':
+                        continue
+                    fail_args = ("Class '{0}' has setter method: '{1}'".format(ctx.cls.name, decorator.name), ctx.cls)
+                    ctx.api.fail(*fail_args)
+        return True

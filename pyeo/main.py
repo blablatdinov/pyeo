@@ -26,6 +26,7 @@ from pyeo.features.final_object import FinalClassFeature
 from pyeo.features.method_has_protocol import EachMethodHasProtocolFeature
 from pyeo.features.no_er_names import NoErNamesFeature
 from pyeo.features.no_property_methods import NoPropertyMethodsFeature
+from pyeo.features.no_setters import NoSettersFeature
 from pyeo.features.object_has_protocol import ObjectHasProtocolFeature
 from pyeo.features.protocol_method_code_free import ProtocolMethodCodeFreeFeature
 
@@ -39,6 +40,7 @@ def analyze(ctx):
     if ctx.cls.removed_base_type_exprs and ctx.cls.removed_base_type_exprs[0].fullname == 'typing.Protocol':
         NoPropertyMethodsFeature().analyze(ctx)
         ProtocolMethodCodeFreeFeature().analyze(ctx)
+        NoSettersFeature().analyze(ctx)
         return True
     if not ObjectHasProtocolFeature().analyze(ctx):
         return True
@@ -46,6 +48,7 @@ def analyze(ctx):
     FinalClassFeature().analyze(ctx)
     NoErNamesFeature().analyze(ctx)
     NoPropertyMethodsFeature().analyze(ctx)
+    NoSettersFeature().analyze(ctx)
     return True
 
 
