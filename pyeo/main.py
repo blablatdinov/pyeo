@@ -29,6 +29,7 @@ from pyeo.features.no_property_methods import NoPropertyMethodsFeature
 from pyeo.features.no_setters import NoSettersFeature
 from pyeo.features.object_has_protocol import ObjectHasProtocolFeature
 from pyeo.features.protocol_method_code_free import ProtocolMethodCodeFreeFeature
+from pyeo.features.no_code_in_ctors import NoCodeInCtorFeature
 
 
 def analyze(ctx):
@@ -49,6 +50,7 @@ def analyze(ctx):
     NoErNamesFeature().analyze(ctx)
     NoPropertyMethodsFeature().analyze(ctx)
     NoSettersFeature().analyze(ctx)
+    NoCodeInCtorFeature().analyze(ctx)
     return True
 
 
