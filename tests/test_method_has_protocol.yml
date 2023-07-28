@@ -70,6 +70,9 @@
     @final
     class HttpHouse(House, Extra):
 
+        def __init__(self):
+            self._some_attr = 42
+
         @classmethod
         def secondary_ctor(cls):
             return cls()
