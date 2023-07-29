@@ -36,7 +36,7 @@ class HttpHouse(House):
 
 Mypy helps prevent AttributeError and other type-related errors by providing static type checking for Python code. It allows specifying variable types, function arguments, and return types to catch potential type issues before the program runs. By using Mypy, developers can identify and fix problems related to attribute access and other type mismatches, leading to improved code quality and easier maintenance.
 
-- [ ] No code in constructors ([why?](http://www.yegor256.com/2015/05/07/ctors-must-be-code-free.html))
+- [x] No code in constructors ([why?](http://www.yegor256.com/2015/05/07/ctors-must-be-code-free.html))
 
 - [x] No getters and setters ([why?](http://www.yegor256.com/2014/09/16/getters-and-setters-are-evil.html))
 

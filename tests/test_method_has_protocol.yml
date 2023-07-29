@@ -54,3 +54,31 @@
 
         def extra(self) -> str:
             return '1'
+
+- case: classmethod_ctor_without_protocol
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    class House(Protocol):
+        def area(self) -> int: ...
+
+    class Extra(Protocol):
+        def extra(self) -> str: ...
+
+    @elegant
+    @final
+    class HttpHouse(House, Extra):
+
+        def __init__(self):
+            self._some_attr = 42
+
+        @classmethod
+        def secondary_ctor(cls):
+            return cls()
+
+        def area(self) -> int:
+            return 5
+
+        def extra(self) -> str:
+            return '1'

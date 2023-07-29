@@ -26,5 +26,6 @@ def elegant(class_):
     """Decorator for elegant objects and protocols.
 
     :param class_: decorated class
+    :return class_: decorated class
     """
     return class_

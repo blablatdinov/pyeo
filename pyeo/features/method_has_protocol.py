@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from mypy.nodes import Decorator
 
 
 class EachMethodHasProtocolFeature(object):
@@ -34,7 +35,7 @@ class EachMethodHasProtocolFeature(object):
         object_methods = {
             def_body.name: def_body
             for def_body in ctx.cls.defs.body
-            if not def_body.name.startswith('_')
+            if not def_body.name.startswith('_') and not self._method_is_ctor(def_body)
         }
         if not ctx.cls.base_type_exprs:
             return False
@@ -59,3 +60,11 @@ class EachMethodHasProtocolFeature(object):
                     method,
                 )
         return True
+
+    def _method_is_ctor(self, def_body) -> bool:
+        if not isinstance(def_body, Decorator):
+            return False
+        for dec in def_body.original_decorators:
+            if dec.name == 'classmethod':
+                return True
+        return False

@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.nodes import Decorator, OverloadedFuncDef
+from mypy.nodes import OverloadedFuncDef
 
 
 class NoSettersFeature(object):
@@ -36,11 +36,14 @@ class NoSettersFeature(object):
             if not isinstance(body_item, OverloadedFuncDef):
                 continue
             for decorator in body_item.items:
-                if not decorator.decorators:
-                    continue
-                for dec in decorator.decorators:
-                    if dec.name != 'setter':
-                        continue
-                    fail_args = ("Class '{0}' has setter method: '{1}'".format(ctx.cls.name, decorator.name), ctx.cls)
-                    ctx.api.fail(*fail_args)
+                self._check_decorators(ctx, decorator)
         return True
+
+    def _check_decorators(self, ctx, body_item):
+        if not body_item.decorators:
+            return
+        for dec in body_item.decorators:
+            if dec.name != 'setter':
+                return
+            fail_args = ("Class '{0}' has setter method: '{1}'".format(ctx.cls.name, body_item.name), ctx.cls)
+            ctx.api.fail(*fail_args)
