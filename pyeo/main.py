@@ -27,10 +27,11 @@ from pyeo.features.method_has_protocol import EachMethodHasProtocolFeature
 from pyeo.features.no_code_in_ctors import NoCodeInCtorFeature
 from pyeo.features.no_er_names import NoErNamesFeature
 from pyeo.features.no_property_methods import NoPropertyMethodsFeature
+from pyeo.features.no_reflection import NoReflectionFeature
 from pyeo.features.no_setters import NoSettersFeature
+from pyeo.features.no_staticmethods import NoStaticmethodsFeature
 from pyeo.features.object_has_protocol import ObjectHasProtocolFeature
 from pyeo.features.protocol_method_code_free import ProtocolMethodCodeFreeFeature
-from pyeo.features.no_staticmethods import NoStaticmethodsFeature
 
 
 def analyze(ctx):
@@ -54,6 +55,7 @@ def analyze(ctx):
     NoSettersFeature().analyze(ctx)
     NoCodeInCtorFeature().analyze(ctx)
     NoStaticmethodsFeature().analyze(ctx)
+    NoReflectionFeature().analyze(ctx)
     return True
 
 
