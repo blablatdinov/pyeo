@@ -82,3 +82,31 @@
 
         def extra(self) -> str:
             return '1'
+
+- case: test_stringable
+  main: |
+    import attrs
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    @elegant
+    class Stringable(Protocol):
+        """Интерфейс объектов, которые можно привести к строке."""
+
+        def __str__(self) -> str:
+            """Приведение к строке."""
+
+    @final
+    @attrs.define(frozen=True)
+    @elegant
+    class ThroughStringable(Stringable):
+        """Обертка для строки."""
+
+        _source: str
+
+        def __str__(self):
+            """Строковое представление.
+
+            :return: str
+            """
+            return self._source

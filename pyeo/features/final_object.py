@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from mypy.nodes import NameExpr
 
 
 class FinalClassFeature(object):
@@ -31,7 +32,7 @@ class FinalClassFeature(object):
         :param ctx: mypy context
         :return: bool
         """
-        if 'typing.final' not in {decorator.fullname for decorator in ctx.cls.decorators}:
+        if 'typing.final' not in {decorator.fullname for decorator in ctx.cls.decorators if isinstance(decorator, NameExpr)}:
             ctx.api.fail("Class '{0}' must be final.".format(ctx.cls.name), ctx.cls)
             return False
         return True

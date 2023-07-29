@@ -16,7 +16,7 @@
     @elegant
     class HttpHouse(House):
 
-        @functools.lru_cache
+        @functools.lru_cache()
         def area(self) -> int:
             return 5
 

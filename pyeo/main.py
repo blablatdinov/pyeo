@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from mypy.nodes import IndexExpr
 from mypy.plugin import Plugin
 
 from pyeo.features.final_object import FinalClassFeature
@@ -34,13 +35,26 @@ from pyeo.features.object_has_protocol import ObjectHasProtocolFeature
 from pyeo.features.protocol_method_code_free import ProtocolMethodCodeFreeFeature
 
 
+def _is_protocl(cls):
+    if not cls.removed_base_type_exprs:
+        return False
+    if isinstance(cls.removed_base_type_exprs[0], IndexExpr):
+        return cls.removed_base_type_exprs[0].base.fullname == 'typing.Protocol'
+    return cls.removed_base_type_exprs[0].fullname == 'typing.Protocol'
+
+
 def analyze(ctx):
     """Features controller.
 
     :param ctx: mypy context
     :return: bool
     """
-    if ctx.cls.removed_base_type_exprs and ctx.cls.removed_base_type_exprs[0].fullname == 'typing.Protocol':
+    # print(ctx.cls.fullname)
+    # # print(ctx.cls.removed_base_type_exprs)
+    # for x in ctx.cls.removed_base_type_exprs:
+    #     print(x)
+    # print('\n' * 3)
+    if _is_protocl(ctx.cls):
         NoPropertyMethodsFeature().analyze(ctx)
         ProtocolMethodCodeFreeFeature().analyze(ctx)
         NoSettersFeature().analyze(ctx)

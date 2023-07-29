@@ -53,3 +53,23 @@
     main:11: error: Find code in ctor HttpHouse.__init__.  [misc]
     main:11: error: Find code in ctor HttpHouse.secondary_ctor.  [misc]
   
+- case: pass_in_ctor
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    @elegant
+    class House(Protocol):
+
+        def area(self) -> int: ...
+
+    @final
+    @elegant
+    class HttpHouse(House):
+
+        def __init__(self, cost):
+            pass
+
+        def area(self) -> int:
+            return 5
+  
