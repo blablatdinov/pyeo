@@ -48,9 +48,9 @@ When you use `attrs.define(frozen=True)` for a class, all its attributes become 
 
 - [x] No readers, parsers, controllers, sorters, and so on ([why?](https://www.yegor256.com/2015/03/09/objects-end-with-er.html))
 
-- [ ] No static methods, not even private ones ([why?](http://www.yegor256.com/2017/02/07/private-method-is-new-class.html))
+- [x] No static methods, not even private ones ([why?](http://www.yegor256.com/2017/02/07/private-method-is-new-class.html))
 
-- [ ] No instanceof, type casting, or reflection ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
+- [x] No instanceof, type casting, or reflection ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
 
 - [x] No public methods without a contract (interface) ([why?](https://www.yegor256.com/2014/11/20/seven-virtues-of-good-object.html#2-he-works-by-contracts))
 
