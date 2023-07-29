@@ -26,14 +26,6 @@ from mypy.nodes import Decorator
 class EachMethodHasProtocolFeature(object):
     """Checking each object method has protocol."""
 
-    def _method_is_ctor(self, def_body) -> bool:
-        if not isinstance(def_body, Decorator):
-            return False
-        for dec in def_body.original_decorators:
-            if dec.name == 'classmethod':
-                return True
-        return False
-
     def analyze(self, ctx) -> bool:
         """Analyzing.
 
@@ -68,3 +60,11 @@ class EachMethodHasProtocolFeature(object):
                     method,
                 )
         return True
+
+    def _method_is_ctor(self, def_body) -> bool:
+        if not isinstance(def_body, Decorator):
+            return False
+        for dec in def_body.original_decorators:
+            if dec.name == 'classmethod':
+                return True
+        return False

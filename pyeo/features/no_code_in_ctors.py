@@ -34,19 +34,31 @@ class NoCodeInCtorFeature(object):
         """
         for func in ctx.cls.defs.body:
             if isinstance(func, Decorator) and 'classmethod' in {dec.name for dec in func.original_decorators}:
-                for elem in func.func.body.body:
-                    # TODO: ReturnStmt can contain logic like list comprehension
-                    # we must iter by nodes of expr and check all elements
-                    #
-                    # @classmethod
-                    # def secondary_ctor(cls, ages: list[str]):
-                    #     return cls(
-                    #         [int(x) for x in ages]
-                    #     )
-                    if not isinstance(elem, ReturnStmt):
-                        ctx.api.fail("Find code in ctor {0}.{1}.".format(ctx.cls.name, func.name), ctx.cls)
+                self._secondary_ctor_check(ctx, func)
             elif func.name == '__init__':
-                for elem in func.body.body:
-                    if not isinstance(elem, AssignmentStmt):
-                        ctx.api.fail("Find code in ctor {0}.{1}.".format(ctx.cls.name, func.name), ctx.cls)
+                self._primary_ctor_check(ctx, func)
         return True
+
+    def _secondary_ctor_check(self, ctx, func):
+        for elem in func.func.body.body:
+            # TODO: ReturnStmt can contain logic like list comprehension
+            # we must iter by nodes of expr and check all elements
+            #
+            # @classmethod
+            # def secondary_ctor(cls, ages: list[str]):
+            #     return cls(
+            #         [int(x) for x in ages]
+            #     )
+            if not isinstance(elem, ReturnStmt):
+                ctx.api.fail(
+                    'Find code in ctor {0}.{1}.'.format(ctx.cls.name, func.name),
+                    ctx.cls,
+                )
+
+    def _primary_ctor_check(self, ctx, func):
+        for elem in func.body.body:
+            if not isinstance(elem, AssignmentStmt):
+                ctx.api.fail(
+                    'Find code in ctor {0}.{1}.'.format(ctx.cls.name, func.name),
+                    ctx.cls,
+                )
