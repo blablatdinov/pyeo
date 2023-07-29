@@ -33,8 +33,6 @@ class NoCodeInCtorFeature(object):
         :return: bool
         """
         for func in ctx.cls.defs.body:
-            if func.name != 'float_ctor':
-                continue
             if isinstance(func, Decorator) and 'classmethod' in {dec.name for dec in func.original_decorators}:
                 for elem in func.func.body.body:
                     # TODO: ReturnStmt can contain logic like list comprehension

@@ -1,0 +1,55 @@
+- case: ctor_without_code
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    @elegant
+    class House(Protocol):
+
+        def area(self) -> int: ...
+
+    @final
+    @elegant
+    class HttpHouse(House):
+
+        def __init__(self, cost):
+            self._cost = cost
+
+        @classmethod
+        def secondary_ctor(cls, cost):
+            return cls(cost)
+
+        def area(self) -> int:
+            return 5
+  
+- case: ctor_with_code
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    @elegant
+    class House(Protocol):
+
+        def area(self) -> int: ...
+
+    @final
+    @elegant
+    class HttpHouse(House):
+
+        def __init__(self, cost):
+            self._cost = cost
+            if cost < 0:
+                self._cost = 0
+
+        @classmethod
+        def secondary_ctor(cls, cost):
+            if cost < 0:
+                return cls(20)
+            return cls(cost)
+
+        def area(self) -> int:
+            return 5
+  out: |
+    main:11: error: Find code in ctor HttpHouse.__init__.  [misc]
+    main:11: error: Find code in ctor HttpHouse.secondary_ctor.  [misc]
+  
