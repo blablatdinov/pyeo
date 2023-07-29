@@ -36,9 +36,6 @@ class NoReflectionFeature(object):
         """
         for elem in ctx.cls.defs.body:
             self._walk_expressions(ctx, elem)
-        # if 'typing.final' not in {decorator.fullname for decorator in ctx.cls.decorators}:
-        #     ctx.api.fail("Class '{0}' must be final.".format(ctx.cls.name), ctx.cls)
-        #     return False
         return True
 
     def _walk_expressions(self, ctx, expr):
