@@ -46,3 +46,33 @@
   out: |
     main:5: error: Protocol 'House' method 'area' has implementation  [misc]
     main:5: error: Protocol 'House' method 'cost' has implementation  [misc]
+
+- case: generic_protocol
+  main: |
+    import attrs
+    from pyeo import elegant
+    from typing import Protocol, final, TypeVar
+
+    T = TypeVar('T', covariant=True)
+
+    @elegant
+    class Stringable(Protocol[T]):
+        """Интерфейс объектов, которые можно привести к строке."""
+
+        def __str__(self) -> str:
+            """Приведение к строке."""
+
+    @final
+    @attrs.define(frozen=True)
+    @elegant
+    class ThroughStringable(Stringable):
+        """Обертка для строки."""
+
+        _source: str
+
+        def __str__(self):
+            """Строковое представление.
+
+            :return: str
+            """
+            return self._source

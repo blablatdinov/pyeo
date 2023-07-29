@@ -22,6 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from mypy.nodes import AssignmentStmt, Decorator, ReturnStmt
 
+from pyeo.utils.decorator_name import decorator_name
+
 
 class NoStaticmethodsFeature(object):
     """Checking each object method has protocol."""
@@ -33,7 +35,7 @@ class NoStaticmethodsFeature(object):
         :return: bool
         """
         for func in ctx.cls.defs.body:
-            if isinstance(func, Decorator) and 'staticmethod' in {dec.name for dec in func.original_decorators}:
+            if isinstance(func, Decorator) and 'staticmethod' in {decorator_name(dec) for dec in func.original_decorators}:
                 ctx.api.fail(
                     'Find staticmethod {0}.{1}.'.format(ctx.cls.name, func.name),
                     ctx.cls,

@@ -20,7 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.nodes import AssignmentStmt, Decorator, ReturnStmt
+from mypy.nodes import AssignmentStmt, Block, Decorator, FuncDef, NameExpr, PassStmt, ReturnStmt
+
+from pyeo.utils.decorator_name import decorator_name
 
 
 class NoCodeInCtorFeature(object):
@@ -33,8 +35,10 @@ class NoCodeInCtorFeature(object):
         :return: bool
         """
         for func in ctx.cls.defs.body:
-            if isinstance(func, Decorator) and 'classmethod' in {dec.name for dec in func.original_decorators}:
+            if isinstance(func, Decorator) and 'classmethod' in {decorator_name(dec) for dec in func.original_decorators}:
                 self._secondary_ctor_check(ctx, func)
+            elif not isinstance(func, FuncDef):
+                continue
             elif func.name == '__init__':
                 self._primary_ctor_check(ctx, func)
         return True
@@ -57,6 +61,8 @@ class NoCodeInCtorFeature(object):
 
     def _primary_ctor_check(self, ctx, func):
         for elem in func.body.body:
+            if isinstance(elem, PassStmt):
+                continue
             if not isinstance(elem, AssignmentStmt):
                 ctx.api.fail(
                     'Find code in ctor {0}.{1}.'.format(ctx.cls.name, func.name),

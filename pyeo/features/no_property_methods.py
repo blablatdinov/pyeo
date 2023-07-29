@@ -33,7 +33,7 @@ class NoPropertyMethodsFeature(object):
         :return: bool
         """
         for body_item in ctx.cls.defs.body:
-            fail_args = ("Class '{0}' has property method: '{1}'".format(ctx.cls.name, body_item.name), ctx.cls)
             if isinstance(body_item, Decorator) and body_item.func.is_property:
+                fail_args = ("Class '{0}' has property method: '{1}'".format(ctx.cls.name, body_item.name), ctx.cls)
                 ctx.api.fail(*fail_args)
         return True

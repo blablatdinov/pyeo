@@ -3,12 +3,21 @@
     from pyeo import elegant
     from typing import Protocol, final
 
+    @elegant
     class House(Protocol):
         def area(self) -> int: ...
 
     @elegant
+    class BigHouse(Protocol):
+        """Protocol docstring."""
+
+        def area(self) -> int:
+            """Protocol method docstring."""
+
+    @elegant
     @final
     class PgHouse(House):
+        """Class docstring."""
 
         def area(self) -> int:
             return 10

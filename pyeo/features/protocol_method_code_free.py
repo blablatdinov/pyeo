@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.nodes import EllipsisExpr, FuncDef, PassStmt, StrExpr
+from mypy.nodes import AssignmentStmt, EllipsisExpr, ExpressionStmt, FuncDef, PassStmt, StrExpr
 
 
 class ProtocolMethodCodeFreeFeature(object):
@@ -33,10 +33,10 @@ class ProtocolMethodCodeFreeFeature(object):
         :return: bool
         """
         for method in ctx.cls.defs.body:
-            fail_args = ("Protocol '{0}' method '{1}' has implementation".format(ctx.cls.name, method.name), ctx.cls)
             if not isinstance(method, FuncDef):
                 continue
             for body_item in method.body.body:
+                fail_args = ("Protocol '{0}' method '{1}' has implementation".format(ctx.cls.name, method.name), ctx.cls)
                 if isinstance(body_item, PassStmt):
                     continue
                 if not hasattr(body_item, 'expr'):  # noqa: WPS421 need in refactor
