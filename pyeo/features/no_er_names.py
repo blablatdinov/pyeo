@@ -38,7 +38,16 @@ class NoErNamesFeature(object):
         )
         class_name = ctx.cls.name
         for fs in forbidden_suffix:
-            if class_name.endswith(fs):
+            if class_name.endswith(fs) and not self._suffix_in_whitelist:
                 ctx.api.fail("Class '{0}' has forbidden class name suffix ({1}).".format(ctx.cls.name, fs), ctx.cls)
                 return False
         return True
+
+    def _suffix_in_whitelist(self, class_name):
+        whitelist = (
+            'Answer',
+        )
+        for whitelist_name in whitelist:
+            if class_name[-len(whitelist_name):] == whitelist_name:
+                return True
+        return False
