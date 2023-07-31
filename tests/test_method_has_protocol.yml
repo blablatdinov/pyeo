@@ -13,6 +13,21 @@
         def area(self) -> int:
             return 10
 
+- case: correct_async
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    class House(Protocol):
+        async def area(self) -> int: ...
+
+    @elegant
+    @final
+    class PgHouse(House):
+
+        async def area(self) -> int:
+            return 10
+
 - case: method_without_protocol
   main: |
     from pyeo import elegant
@@ -110,3 +125,26 @@
             :return: str
             """
             return self._source
+
+- case: different_files
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+    from myapp.interface import House  # TODO try remove this line
+
+    @elegant
+    @final
+    class PgHouse(House):
+
+        async def area(self) -> int:
+            return 10
+  files:
+    - path: myapp/__init__.py
+    - path: myapp/interface.py
+      content: |
+        from pyeo import elegant
+        from typing import Protocol, final
+
+        @elegant
+        class House(Protocol):
+            async def area(self) -> int: ...

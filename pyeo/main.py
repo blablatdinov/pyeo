@@ -35,7 +35,7 @@ from pyeo.features.object_has_protocol import ObjectHasProtocolFeature
 from pyeo.features.protocol_method_code_free import ProtocolMethodCodeFreeFeature
 
 
-def _is_protocl(cls):
+def _is_protocol(cls):
     if not cls.removed_base_type_exprs:
         return False
     if isinstance(cls.removed_base_type_exprs[0], IndexExpr):
@@ -49,12 +49,7 @@ def analyze(ctx):
     :param ctx: mypy context
     :return: bool
     """
-    # print(ctx.cls.fullname)
-    # # print(ctx.cls.removed_base_type_exprs)
-    # for x in ctx.cls.removed_base_type_exprs:
-    #     print(x)
-    # print('\n' * 3)
-    if _is_protocl(ctx.cls):
+    if _is_protocol(ctx.cls):
         NoPropertyMethodsFeature().analyze(ctx)
         ProtocolMethodCodeFreeFeature().analyze(ctx)
         NoSettersFeature().analyze(ctx)

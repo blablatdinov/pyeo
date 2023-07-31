@@ -40,11 +40,11 @@ class EachMethodHasProtocolFeature(object):
         if not ctx.cls.base_type_exprs:
             return False
         extra_method_names = set(object_methods.keys()) - {  # noqa: WPS224 need a refactor
-            method.name
+            method
             for base_type in ctx.cls.base_type_exprs
             for node in base_type.node.mro
-            for method in node.defn.defs.body
-            if isinstance(method, FuncDef)
+            if hasattr(node.defn.info, 'names')
+            for method in node.defn.info.names
         }
         if extra_method_names:
             failed_methods = [
