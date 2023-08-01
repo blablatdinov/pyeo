@@ -22,10 +22,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 
-def elegant(class_):
+def elegant(eo_class):
     """Decorator for elegant objects and protocols.
 
-    :param class_: decorated class
-    :return class_: decorated class
+    :param eo_class: decorated class
+    :return: decorated class
     """
-    return class_
+    return eo_class

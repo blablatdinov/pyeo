@@ -32,7 +32,10 @@ class FinalClassFeature(object):
         :param ctx: mypy context
         :return: bool
         """
-        if 'typing.final' not in {decorator.fullname for decorator in ctx.cls.decorators if isinstance(decorator, NameExpr)}:
+        if 'typing.final' not in self._decorator_names(ctx):
             ctx.api.fail("Class '{0}' must be final.".format(ctx.cls.name), ctx.cls)
             return False
         return True
+
+    def _decorator_names(self, ctx):
+        return {decorator.fullname for decorator in ctx.cls.decorators if isinstance(decorator, NameExpr)}

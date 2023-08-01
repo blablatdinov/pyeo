@@ -73,3 +73,44 @@
         def area(self) -> int:
             return 5
   
+- case: test_unpack
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    @elegant
+    class House(Protocol):
+
+        def area(self) -> int: ...
+
+    @final
+    @elegant
+    class HttpHouse(House):
+
+        def __init__(self, *multipliers: int):
+            self._multipliers = multipliers 
+
+        def area(self) -> int:
+            return 5
+  
+- case: test_docstring
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    @elegant
+    class House(Protocol):
+
+        def area(self) -> int: ...
+
+    @final
+    @elegant
+    class HttpHouse(House):
+
+        def __init__(self, cost):
+            """Docstring."""
+            self._cost = cost 
+
+        def area(self) -> int:
+            return 5
+  

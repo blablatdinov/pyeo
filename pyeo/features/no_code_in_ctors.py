@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.nodes import AssignmentStmt, Block, Decorator, FuncDef, NameExpr, PassStmt, ReturnStmt
+from mypy.nodes import AssignmentStmt, Decorator, ExpressionStmt, FuncDef, PassStmt, ReturnStmt, StrExpr
 
 from pyeo.utils.decorator_name import decorator_name
 
@@ -35,13 +35,17 @@ class NoCodeInCtorFeature(object):
         :return: bool
         """
         for func in ctx.cls.defs.body:
-            if isinstance(func, Decorator) and 'classmethod' in {decorator_name(dec) for dec in func.original_decorators}:
+            if self._is_secondary_ctor(func):
                 self._secondary_ctor_check(ctx, func)
             elif not isinstance(func, FuncDef):
                 continue
             elif func.name == '__init__':
                 self._primary_ctor_check(ctx, func)
         return True
+
+    def _is_secondary_ctor(self, func):
+        is_decorator = isinstance(func, Decorator)
+        return is_decorator and 'classmethod' in {decorator_name(dec) for dec in func.original_decorators}
 
     def _secondary_ctor_check(self, ctx, func):
         for elem in func.func.body.body:
@@ -59,9 +63,13 @@ class NoCodeInCtorFeature(object):
                     ctx.cls,
                 )
 
+    def _allowed_exprs(self, expr):
+        is_pass = isinstance(expr, PassStmt)
+        return is_pass or isinstance(expr, ExpressionStmt) and isinstance(expr.expr, StrExpr)
+
     def _primary_ctor_check(self, ctx, func):
         for elem in func.body.body:
-            if isinstance(elem, PassStmt):
+            if self._allowed_exprs(elem):
                 continue
             if not isinstance(elem, AssignmentStmt):
                 ctx.api.fail(
