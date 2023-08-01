@@ -20,13 +20,18 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pprint import pprint
-
-from mypy.nodes import Block, CallExpr
+from mypy.nodes import CallExpr
 
 
 class NoReflectionFeature(object):
     """Checking each object method has protocol."""
+
+    _forbid_func_names = (
+        'builtins.isinstance',
+        'builtins.type',
+        'builtins.issubclass',
+        'builtins.hasattr',
+    )
 
     def analyze(self, ctx) -> bool:
         """Analyzing.
@@ -39,12 +44,6 @@ class NoReflectionFeature(object):
         return True
 
     def _walk_expressions(self, ctx, expr):
-        forbid_func_names = (
-            'builtins.isinstance',
-            'builtins.type',
-            'builtins.issubclass',
-            'builtins.hasattr',
-        )
         if hasattr(expr, 'body'):
             self._walk_expressions(ctx, expr.body)
         if isinstance(expr, list):
@@ -53,14 +52,17 @@ class NoReflectionFeature(object):
         if hasattr(expr, 'expr'):
             self._walk_expressions(ctx, expr.expr)
         if isinstance(expr, CallExpr):
-            if expr.callee.fullname in forbid_func_names:
-                ctx.api.fail(
-                    "Class '{0}' has '{1}' reflection function call.".format(
-                        ctx.cls.name,
-                        expr.callee.fullname,
-                    ),
-                    ctx.cls,
-                )
-            if hasattr(expr, 'args'):
-                for elem in expr.args:
-                    self._walk_expressions(ctx, elem)
+            self._is_bad_expr(ctx, expr)
+
+    def _is_bad_expr(self, ctx, expr):
+        if expr.callee.fullname in self._forbid_func_names:
+            ctx.api.fail(
+                "Class '{0}' has '{1}' reflection function call.".format(
+                    ctx.cls.name,
+                    expr.callee.fullname,
+                ),
+                ctx.cls,
+            )
+        if hasattr(expr, 'args'):
+            for expr_arg in expr.args:
+                self._walk_expressions(ctx, expr_arg)

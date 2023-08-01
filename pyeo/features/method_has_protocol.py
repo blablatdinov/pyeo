@@ -35,17 +35,11 @@ class EachMethodHasProtocolFeature(object):
         object_methods = {
             def_body.name: def_body
             for def_body in ctx.cls.defs.body
-            if isinstance(def_body, FuncDef) and not def_body.name.startswith('_') and not self._method_is_ctor(def_body)
+            if self._is_public_method(def_body)
         }
         if not ctx.cls.base_type_exprs:
             return False
-        extra_method_names = set(object_methods.keys()) - {  # noqa: WPS224 need a refactor
-            method
-            for base_type in ctx.cls.base_type_exprs
-            for node in base_type.node.mro
-            if hasattr(node.defn.info, 'names')
-            for method in node.defn.info.names
-        }
+        extra_method_names = object_methods.keys() - self._protocol_method_names(ctx.cls.base_type_exprs)
         if extra_method_names:
             failed_methods = [
                 method
@@ -61,6 +55,20 @@ class EachMethodHasProtocolFeature(object):
                     method,
                 )
         return True
+
+    def _protocol_method_names(self, base_type_exprs):
+        res = []
+        for base_type in base_type_exprs:
+            for node in base_type.node.mro:
+                if not hasattr(node.defn.info, 'names'):
+                    continue
+                for method in node.defn.info.names:
+                    res.append(method)
+        return res
+
+    def _is_public_method(self, def_body):
+        is_func_def = isinstance(def_body, FuncDef)
+        return is_func_def and not def_body.name.startswith('_') and not self._method_is_ctor(def_body)
 
     def _method_is_ctor(self, def_body) -> bool:
         if not isinstance(def_body, Decorator):
