@@ -37,7 +37,7 @@ class HttpHouse(House):
 
 ## Contents
 - Principles
-  - [No null](#no-null) ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html)
+  - [No null](#no-null) ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
   - [No code in constructors](#no-code-in-constructors) ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
 
   - [No getters and setters](#no-getters-and-setters) ([why?](http://www.yegor256.com/2014/09/16/getters-and-setters-are-evil.html))
