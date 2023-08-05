@@ -127,6 +127,7 @@
             return self._source
 
 - case: different_files
+  disable_cache: false
   main: |
     from pyeo import elegant
     from typing import Protocol, final
