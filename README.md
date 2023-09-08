@@ -8,7 +8,7 @@ that your Python code adheres to the core tenets of elegance, simplicity, and ma
 
 Pyeo is proudly based on the robust foundation of [Mypy](https://github.com/python/mypy), a leading static type checker for Python. Mypy not only provides excellent type analysis capabilities but also offers a convenient-to-use API and abstractions for working with Python AST (Abstract Syntax Tree). This unique combination empowers Pyeo a seamless static analysis experience, allowing for a deeper understanding of your code's structure and semantics.
 
-The project is inspired by the team that made fun of me because of the lego build. Tinkoff stt lambda ❤️️
+The project is inspired by the team that made fun of me because of the lego build. STT lambda ❤️️
 
 
 ```bash
