@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.nodes import Decorator, FuncDef, TypeAlias, IndexExpr, Var
+from mypy.nodes import Decorator, FuncDef, TypeAlias, IndexExpr, Var, NameExpr, TypeInfo
 
 
 class EachMethodHasProtocolFeature(object):
@@ -63,13 +63,12 @@ class EachMethodHasProtocolFeature(object):
                 node_for_analyze = base_type.base.node
             elif isinstance(base_type.node, TypeAlias):
                 node_for_analyze = base_type.node.target.type
-            # Support python3.8, 3.9
-            # --------------------
-            # elif isinstance(base_type_exprs, list):
-            #     return []
-            # elif isinstance(base_type_exprs.node, Var):
-            #     return []
-            # --------------------
+            elif isinstance(base_type.node, TypeInfo):
+                for node in base_type.node.mro:
+                    for method in node.names:
+                        res.append(method)
+                continue
+                node_for_analyze = base_type.node
             else:
                 node_for_analyze = base_type.node
             for node in node_for_analyze.mro:
