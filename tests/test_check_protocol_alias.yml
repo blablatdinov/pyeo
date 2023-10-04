@@ -1,7 +1,8 @@
 - case: protocol_alias
   main: |
     from pyeo import elegant
-    from typing import Protocol, final, TypeAlias
+    from typing import Protocol, final
+    from typing_extensions import TypeAlias
 
     @elegant
     class House(Protocol):
@@ -16,3 +17,18 @@
 
         def area(self) -> int:
             return 5
+
+- case: not_protocol_alias
+  main: |
+    from typing import final
+    from pyeo import elegant
+    from typing_extensions import TypeAlias
+
+    number: TypeAlias = int
+
+    @final
+    @elegant
+    class Num(number):
+
+        def __int__(self):
+            return self

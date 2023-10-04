@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.nodes import TypeAlias
+from mypy.nodes import TypeAlias, IndexExpr, Var
 
 
 class ObjectHasProtocolFeature(object):
@@ -36,7 +36,16 @@ class ObjectHasProtocolFeature(object):
             ctx.api.fail("Class '{0}' does not implement a Protocol.".format(ctx.cls.name), ctx.cls)
             return False
         base_type_exprs = ctx.cls.base_type_exprs[0]
-        if isinstance(base_type_exprs.node, TypeAlias):
+        if isinstance(base_type_exprs, IndexExpr):
+            base_type_exprs = base_type_exprs.base
+        elif isinstance(base_type_exprs.node, TypeAlias):
+            return True
+        # Support python3.8, 3.9
+        # --------------------
+        elif isinstance(base_type_exprs.node, Var):
+            return True
+        # --------------------
+        elif isinstance(base_type_exprs.node, TypeAlias):
             return True
         for node in base_type_exprs.node.mro:
             if node.is_protocol:
