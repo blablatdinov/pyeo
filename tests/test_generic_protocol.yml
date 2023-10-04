@@ -1,0 +1,19 @@
+- case: forbid_names
+  main: |
+    import functools
+    from pyeo import elegant
+    from typing import Protocol, final, TypeVar, List
+
+    ListElemT = TypeVar('ListElemT')
+
+    @elegant
+    class Listable(Protocol[ListElemT]):
+
+        def to_list(self) -> List[ListElemT]: ...
+
+    @final
+    @elegant
+    class Numbers(Listable[int]):
+
+        def to_list(self) -> List[int]:
+            return [5]
