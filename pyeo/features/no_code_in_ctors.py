@@ -58,6 +58,9 @@ class NoCodeInCtorFeature(object):
             #         [int(x) for x in ages]
             #     )
             if not isinstance(elem, ReturnStmt):
+                if isinstance(elem, ExpressionStmt):
+                    if isinstance(elem.expr, StrExpr):
+                        continue
                 ctx.api.fail(
                     'Find code in ctor {0}.{1}.'.format(ctx.cls.name, func.name),
                     ctx.cls,
