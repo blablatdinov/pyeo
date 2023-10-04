@@ -9,6 +9,9 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 license = "MIT"
 readme = "README.md"
 
+[tool.poetry.plugins."flake8.extension"]
+WPS = "pyeo.checker:Checker"
+
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
 mypy = "^1.0"
