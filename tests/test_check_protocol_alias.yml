@@ -1,0 +1,18 @@
+- case: protocol_alias
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final, TypeAlias
+
+    @elegant
+    class House(Protocol):
+
+        def area(self) -> int: ...
+
+    BigHouse: TypeAlias = House
+
+    @final
+    @elegant
+    class HttpHouse(BigHouse):
+
+        def area(self) -> int:
+            return 5
