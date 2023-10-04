@@ -25,6 +25,8 @@
 - case: whitelist
   parametrized:
     - suffix: Answer
+    - suffix: user
+    - suffix: User
   main: |
     from pyeo import elegant
     from typing import Protocol, final
