@@ -114,3 +114,29 @@
         def area(self) -> int:
             return 5
   
+  
+- case: test_secondary_ctor_with_docstring
+  main: |
+    from pyeo import elegant
+    from typing import Protocol, final
+
+    @elegant
+    class House(Protocol):
+
+        def area(self) -> int: ...
+
+    @final
+    @elegant
+    class HttpHouse(House):
+
+        def __init__(self, cost):
+            """Docstring."""
+            self._cost = cost 
+
+        @classmethod
+        def int_ctor(cls, cost: int):
+            """Docstring."""
+            return cls(cost)
+
+        def area(self) -> int:
+            return self._cost.number()

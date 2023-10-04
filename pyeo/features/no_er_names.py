@@ -46,6 +46,8 @@ class NoErNamesFeature(object):
     def _suffix_in_whitelist(self, class_name):
         whitelist = (
             'Answer',
+            'User',
+            'user',
         )
         for whitelist_name in whitelist:
             if class_name[-len(whitelist_name):] == whitelist_name:
