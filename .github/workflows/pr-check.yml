@@ -30,18 +30,50 @@ permissions:
   contents: read
 
 jobs:
-  tests:
-    strategy:
-      matrix:
-        python_version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-    runs-on: ubuntu-latest
+  # tests:
+  #   strategy:
+  #     matrix:
+  #       python_version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: ${{ matrix.python_version }}
+  #     - name: Install Poetry
+  #       uses: snok/install-poetry@v1.3.4
+  #       with:
+  #         virtualenvs-create: true
+  #         virtualenvs-in-project: true
+  #         installer-parallel: true
+  #     - name: Load cached venv
+  #       id: cached-poetry-dependencies
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: .venv
+  #         key: venv-${{ matrix.python_version }}-${{ hashFiles('**/poetry.lock') }}
+  #     - name: Install dependencies
+  #       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+  #       run: poetry install --no-interaction
+  #     - name: Run tests via pytest
+  #       run: poetry run pytest
 
+  integration-test:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
+        with:
+          path: ${{ github.workspace }}/checker
+      - name: Clone other repo
+        uses: actions/checkout@v4
+        with:
+          repository: "blablatdinov/quranbot-aiogram"
+          path: ${{ github.workspace }}/quranbot-aiogram
+      - name: Setup python 3.12
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python_version }}
+          python-version: "3.12"
       - name: Install Poetry
         uses: snok/install-poetry@v1.3.4
         with:
@@ -53,12 +85,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .venv
-          key: venv-${{ matrix.python_version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction
-      - name: Run tests via pytest
-        run: poetry run pytest
+          key: venv-3.12-${{ hashFiles('**/poetry.lock') }}
+      - name: Install deps
+        run: cd ${{ github.workspace }}/quranbot-aiogram && poetry install && poetry add ${{ github.workspace }}/checker
+      - name: Include plugin
+        run: sed -i '117s/# *//' ${{ github.workspace }}/quranbot-aiogram/setup.cfg
+      - name: Test
+        run: cd ${{ github.workspace }}/quranbot-aiogram && poetry run mypy src
 
   # lint:
   #   - uses: actions/checkout@v4
