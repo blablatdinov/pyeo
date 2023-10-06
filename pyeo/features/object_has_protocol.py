@@ -20,7 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.nodes import TypeAlias, IndexExpr, Var
+from mypy.nodes import TypeAlias, IndexExpr, Var, FakeInfo
+
+from pyeo.exceptions import FakeInfoDetectedError
 
 
 class ObjectHasProtocolFeature(object):
@@ -38,11 +40,11 @@ class ObjectHasProtocolFeature(object):
         base_type_exprs = ctx.cls.base_type_exprs[0]
         if isinstance(base_type_exprs, IndexExpr):
             base_type_exprs = base_type_exprs.base
-        elif isinstance(base_type_exprs.node, TypeAlias):
-            return True
+        if isinstance(base_type_exprs.node, Var) and isinstance(base_type_exprs.node.info, FakeInfo):
+            raise FakeInfoDetectedError
         # Support python3.8, 3.9
         # --------------------
-        elif isinstance(base_type_exprs.node, Var):
+        if isinstance(base_type_exprs.node, Var):
             return True
         # --------------------
         elif isinstance(base_type_exprs.node, TypeAlias):

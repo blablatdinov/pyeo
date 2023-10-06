@@ -20,7 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from mypy.nodes import Decorator, FuncDef, TypeAlias, IndexExpr, Var, NameExpr, TypeInfo
+from mypy.nodes import Decorator, FuncDef, TypeAlias, IndexExpr, Var, NameExpr, TypeInfo, FakeInfo
+from mypy.types import AnyType
+
+from pyeo.exceptions import FakeInfoDetectedError
 
 
 class EachMethodHasProtocolFeature(object):
@@ -61,7 +64,11 @@ class EachMethodHasProtocolFeature(object):
         for base_type in base_type_exprs:
             if isinstance(base_type, IndexExpr):
                 node_for_analyze = base_type.base.node
+            elif isinstance(base_type.node, Var) and isinstance(base_type.node.info, FakeInfo):
+                raise FakeInfoDetectedError
             elif isinstance(base_type.node, TypeAlias):
+                if isinstance(base_type.node.target, AnyType):
+                    raise FakeInfoDetectedError
                 node_for_analyze = base_type.node.target.type
             elif isinstance(base_type.node, TypeInfo):
                 for node in base_type.node.mro:
