@@ -9,10 +9,14 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 license = "MIT"
 readme = "README.md"
 
+[tool.poetry.plugins."flake8.extension"]
+PYEO = "pyeo.checker:Checker"
+
 [tool.poetry.dependencies]
 python = ">=3.8.1,<3.13"
 mypy = "1.5.1"
 attrs = "^23.0"
+flake8 = "^6.0"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = "0.18.0"
