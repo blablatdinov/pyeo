@@ -107,7 +107,7 @@ def get_by_id(user_id: int) -> Employee | None: ...
 
 ## No code in constructors
 
-You can use `@attrs.define` for skip this. It decorator create ctor for your classes automatically. However, we implement check that your primary and secondary ctors not contain code, with the exception of attributes assingment. Please check [NoCodeInCtorFeature](/pyeo/features/no_code_in_ctors.py).
+You can use `@attrs.define` for skip this. It decorator create ctor for your classes automatically. However, we implement check that your primary and secondary ctors not contain code, with the exception of attributes assingment. Please check [NoCodeInCtorFeature](/pyeo/features/mypy_features/no_code_in_ctors.py).
 
 ## No getters and setters
 
@@ -123,11 +123,11 @@ When you use `attrs.define(frozen=True)` for a class, all its attributes become 
 
 ## No er suffix
 
-We check you class name not contain `-er` or `(C|c)lient` suffix by check in [NoErNamesFeature](/pyeo/features/no_er_names.py)
+We check you class name not contain `-er` or `(C|c)lient` suffix by check in [NoErNamesFeature](/pyeo/features/mypy_features/no_er_names.py)
 
 ## No static methods
 
-Check by [NoStaticmethodsFeature](/pyeo/features/no_staticmethods.py)
+Check by [NoStaticmethodsFeature](/pyeo/features/mypy_features/no_staticmethods.py)
 
 ## No reflection
 
@@ -141,7 +141,7 @@ Prohibit next function calls:
 
 In Python, `typing.Protocol` is a class introduced in Python 3.8 as part of the typing module. It is used to define structural subtyping or "duck typing" for classes, which allows you to create interfaces without using explicit inheritance.
 
-[EachMethodHasProtocolFeature](/pyeo/features/method_has_protocol.py) rule check that all of public class methods has protocol.
+[EachMethodHasProtocolFeature](/pyeo/features/mypy_features/method_has_protocol.py) rule check that all of public class methods has protocol.
 
 ## No statements in tests
 
@@ -153,4 +153,4 @@ Detect using ORM or ActiveRecord tools on project by design/code review
 
 ## No inheritance
 
-Each `@elegant` object must be `typing.final`. Check by [FinalClassFeature](/pyeo/features/final_object.py)
+Each `@elegant` object must be `typing.final`. Check by [FinalClassFeature](/pyeo/features/mypy_features/final_object.py)

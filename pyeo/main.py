@@ -23,16 +23,16 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from mypy.nodes import IndexExpr
 from mypy.plugin import Plugin
 
-from pyeo.features.final_object import FinalClassFeature
-from pyeo.features.method_has_protocol import EachMethodHasProtocolFeature
-from pyeo.features.no_code_in_ctors import NoCodeInCtorFeature
-from pyeo.features.no_er_names import NoErNamesFeature
-from pyeo.features.no_property_methods import NoPropertyMethodsFeature
-from pyeo.features.no_reflection import NoReflectionFeature
-from pyeo.features.no_setters import NoSettersFeature
-from pyeo.features.no_staticmethods import NoStaticmethodsFeature
-from pyeo.features.object_has_protocol import ObjectHasProtocolFeature
-from pyeo.features.protocol_method_code_free import ProtocolMethodCodeFreeFeature
+from pyeo.features.mypy_features.final_object import FinalClassFeature
+from pyeo.features.mypy_features.method_has_protocol import EachMethodHasProtocolFeature
+from pyeo.features.mypy_features.no_code_in_ctors import NoCodeInCtorFeature
+from pyeo.features.mypy_features.no_er_names import NoErNamesFeature
+from pyeo.features.mypy_features.no_property_methods import NoPropertyMethodsFeature
+from pyeo.features.mypy_features.no_reflection import NoReflectionFeature
+from pyeo.features.mypy_features.no_setters import NoSettersFeature
+from pyeo.features.mypy_features.no_staticmethods import NoStaticmethodsFeature
+from pyeo.features.mypy_features.object_has_protocol import ObjectHasProtocolFeature
+from pyeo.features.mypy_features.protocol_method_code_free import ProtocolMethodCodeFreeFeature
 
 
 def _is_protocol(cls):
