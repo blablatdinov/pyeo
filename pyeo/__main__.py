@@ -35,14 +35,30 @@ def _fullname(name: str, parsed_module):
             for body_elem in elem.body:
                 if isinstance(body_elem, cst.ImportFrom):
                     module_name = body_elem.module.value
-                    for name in body_elem.names:
-                        print(module_name, name.name.value)
+                    for body_name in body_elem.names:
+                        if name == body_name.name.value:
+                            return f'{module_name}.{name}'
 
 
 def _is_elegant_class(elem, parsed_module):
-    if isinstance(elem, cst.ClassDef):
-        for decorator in elem.decorators:
-            _fullname(decorator.decorator.value, parsed_module)
+    if not isinstance(elem, cst.ClassDef):
+        return
+    is_elegant = False
+    is_protocol = False
+    for decorator in elem.decorators:
+        # FIXME: it may be some alias
+        #
+        # from pyeo import elegant
+        # other_name = elegant
+        if _fullname(decorator.decorator.value, parsed_module) == 'pyeo.elegant':
+            is_elegant = True
+            break
+    for base in elem.bases:
+        if _fullname(base.value.value, parsed_module) == 'typing.Protocol':
+            is_elegant = True
+            break
+    return is_elegant and not is_protocol
+
 
 
 @app.command()
@@ -51,7 +67,10 @@ def main(
 ):
     module = cst.parse_module(Path(path).read_text())
     for elem in module.body:
-        _is_elegant_class(elem, module)
+        if _is_elegant_class(elem, module):
+            for decorator in elem.decorators:
+                if _fullname(decorator.decorator.value, module) == 'typing.final':
+                    break
 
 
 if __name__ == '__main__':
