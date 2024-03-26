@@ -56,7 +56,10 @@ def _is_elegant_class(elem, parsed_module):
             is_elegant = True
             break
     for base in elem.bases:
-        if _fullname(base.value.value, parsed_module) == 'typing.Protocol':
+        if isinstance(base.value, cst.Subscript) and _fullname(base.value.value.value, parsed_module) == 'typing.Protocol':
+            is_protocol = True
+            break
+        elif _fullname(base.value.value, parsed_module) == 'typing.Protocol':
             is_protocol = True
             break
     return is_elegant and not is_protocol
