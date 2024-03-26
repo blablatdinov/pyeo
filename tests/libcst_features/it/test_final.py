@@ -12,8 +12,8 @@ class House(Protocol):
 
     def area(self) -> int: ...
 
-@elegant
 @attrs.define(frozen=True)
+@elegant
 class HttpHouse(House):
 
     def area(self) -> int:

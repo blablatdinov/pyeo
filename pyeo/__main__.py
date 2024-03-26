@@ -22,8 +22,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from pathlib import Path
 
-from typer import Typer
 import libcst as cst
+from typer import Typer
+from rich import print
 
 
 app = Typer()
@@ -51,7 +52,7 @@ def _is_elegant_class(elem, parsed_module):
         #
         # from pyeo import elegant
         # other_name = elegant
-        if _fullname(decorator.decorator.value, parsed_module) == 'pyeo.elegant':
+        if isinstance(decorator.decorator, cst.Name) and _fullname(decorator.decorator.value, parsed_module) == 'pyeo.elegant':
             is_elegant = True
             break
     for base in elem.bases:
