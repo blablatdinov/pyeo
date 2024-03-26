@@ -15,7 +15,7 @@ mypy = "^1.6.0"
 attrs = "^23.0"
 
 [tool.poetry.group.dev.dependencies]
-wemake-python-styleguide = "0.18.0"
+wemake-python-styleguide = "0.19.2"
 pytest-mypy-plugins = "3.0.0"
 flake8-copyright = "0.2.4"
 
