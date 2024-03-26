@@ -1,8 +1,10 @@
 from pyeo.__main__ import main
 
 module = """
-from pyeo import elegant
 from typing import Protocol
+
+import attrs
+from pyeo import elegant
 
 @elegant
 class House(Protocol):
@@ -10,6 +12,7 @@ class House(Protocol):
     def area(self) -> int: ...
 
 @elegant
+@attrs.define(frozen=True)
 class HttpHouse(House):
 
     def area(self) -> int:
