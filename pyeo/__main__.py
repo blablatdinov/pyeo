@@ -44,8 +44,6 @@ def _fullname(name: str, parsed_module):
 
 
 def _is_elegant_class(elem, parsed_module):
-    if not isinstance(elem, cst.ClassDef):
-        return
     is_elegant = False
     is_protocol = False
     for decorator in elem.decorators:
@@ -54,39 +52,38 @@ def _is_elegant_class(elem, parsed_module):
         # from pyeo import elegant
         # other_name = elegant
         if _fullname(decorator.decorator.value, parsed_module) == 'pyeo.elegant':
-            print(_fullname(decorator.decorator.value, parsed_module))
             is_elegant = True
             break
     for base in elem.bases:
         if _fullname(base.value.value, parsed_module) == 'typing.Protocol':
-            is_elegant = True
+            is_protocol = True
             break
     return is_elegant and not is_protocol
 
 
-def _process_class(elem, parsed_module) -> list[str]:
-    final_finded = False
-    for decorator in elem.decorators:
-        if isinstance(decorator.decorator, cst.Call):
-            continue
-        if _fullname(decorator.decorator.value, parsed_module) == 'typing.final':
-            final_finded = True
-    if not final_finded:
-        raise ElegantClassMustBeFinal
+class ClassVisitor(cst.CSTVisitor):
+
+    METADATA_DEPENDENCIES = (cst.metadata.PositionProvider, cst.metadata.ParentNodeProvider)
+
+    def visit_ClassDef(self, node: cst.ClassDef):
+        parent_node = self.get_metadata(cst.metadata.ParentNodeProvider, node)
+        if not _is_elegant_class(node, parent_node):
+            return
+        final_finded = False
+        for decorator in node.decorators:
+            if isinstance(decorator.decorator, cst.Call):
+                continue
+            if _fullname(decorator.decorator.value, parent_node) == 'typing.final':
+                final_finded = True
+        if not final_finded:
+            pos = self.get_metadata(cst.metadata.PositionProvider, node).start
+            print(f"{pos.line}:{pos.column} {node.name.value} class must be final")
 
 
 def _process_module(path: Path) -> list[str]:
-    module = cst.parse_module(Path(path).read_text())
+    wrapper = cst.metadata.MetadataWrapper(cst.parse_module(Path(path).read_text()))
+    res = wrapper.visit(ClassVisitor())
     errors = []
-    for elem in module.body:
-        if _is_elegant_class(elem, module):
-            try:
-                _process_class(elem, module)
-            except ElegantClassMustBeFinal:
-                print(elem.name.value)
-                errors.append(
-                    f''
-                )
 
 
 @app.command()
