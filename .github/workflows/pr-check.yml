@@ -92,6 +92,8 @@ jobs:
         run: cd ${{ github.workspace }}/quranbot-aiogram && poetry run mypy src
       - name: Test refurb
         run: cd ${{ github.workspace }}/quranbot-aiogram && poetry run refurb src
+      - name: Test libcst features
+        run: cd ${{ github.workspace }}/quranbot-aiogram && poetry run pyeo src
 
   # lint:
   #   - uses: actions/checkout@v4

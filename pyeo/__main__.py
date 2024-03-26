@@ -29,6 +29,9 @@ import libcst as cst
 app = Typer()
 
 
+class ElegantClassMustBeFinal(Exception): pass
+
+
 def _fullname(name: str, parsed_module):
     for elem in parsed_module.body:
         if isinstance(elem, cst.SimpleStatementLine):
@@ -51,6 +54,7 @@ def _is_elegant_class(elem, parsed_module):
         # from pyeo import elegant
         # other_name = elegant
         if _fullname(decorator.decorator.value, parsed_module) == 'pyeo.elegant':
+            print(_fullname(decorator.decorator.value, parsed_module))
             is_elegant = True
             break
     for base in elem.bases:
@@ -60,17 +64,41 @@ def _is_elegant_class(elem, parsed_module):
     return is_elegant and not is_protocol
 
 
+def _process_class(elem, parsed_module) -> list[str]:
+    final_finded = False
+    for decorator in elem.decorators:
+        if isinstance(decorator.decorator, cst.Call):
+            continue
+        if _fullname(decorator.decorator.value, parsed_module) == 'typing.final':
+            final_finded = True
+    if not final_finded:
+        raise ElegantClassMustBeFinal
+
+
+def _process_module(path: Path) -> list[str]:
+    module = cst.parse_module(Path(path).read_text())
+    errors = []
+    for elem in module.body:
+        if _is_elegant_class(elem, module):
+            try:
+                _process_class(elem, module)
+            except ElegantClassMustBeFinal:
+                print(elem.name.value)
+                errors.append(
+                    f''
+                )
+
 
 @app.command()
 def main(
     path: str,
 ):
-    module = cst.parse_module(Path(path).read_text())
-    for elem in module.body:
-        if _is_elegant_class(elem, module):
-            for decorator in elem.decorators:
-                if _fullname(decorator.decorator.value, module) == 'typing.final':
-                    break
+    path = Path(path)
+    if path.is_dir():
+        for path_ in path.glob('**/*.py'):
+            _process_module(path_)
+    else:
+        _process_module(path)
 
 
 if __name__ == '__main__':
