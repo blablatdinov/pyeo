@@ -177,3 +177,5 @@ pyrightconfig.json
 
 # files for checking plugin
 check.py
+
+.deltaver_cache
