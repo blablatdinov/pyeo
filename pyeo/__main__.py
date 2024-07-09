@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from dataclasses import dataclass
 from pathlib import Path
 
 from typer import Typer
@@ -27,6 +28,15 @@ import libcst as cst
 
 
 app = Typer()
+
+
+@dataclass
+class Violation:
+
+    module: str
+    line: int
+    column: int
+    text: str
 
 
 class ElegantClassMustBeFinal(Exception): pass
@@ -45,7 +55,7 @@ def _fullname(name: str, parsed_module):
 
 def _is_elegant_class(elem, parsed_module):
     if not isinstance(elem, cst.ClassDef):
-        return
+        return 
     is_elegant = False
     is_protocol = False
     for decorator in elem.decorators:
@@ -64,29 +74,36 @@ def _is_elegant_class(elem, parsed_module):
     return is_elegant and not is_protocol
 
 
-def _process_class(elem, parsed_module) -> list[str]:
+def _is_final(elem, parsed_module) -> list[str]:
     final_finded = False
     for decorator in elem.decorators:
         if isinstance(decorator.decorator, cst.Call):
             continue
         if _fullname(decorator.decorator.value, parsed_module) == 'typing.final':
             final_finded = True
-    if not final_finded:
-        raise ElegantClassMustBeFinal
+    return final_finded
 
 
 def _process_module(path: Path) -> list[str]:
     module = cst.parse_module(Path(path).read_text())
-    errors = []
-    for elem in module.body:
-        if _is_elegant_class(elem, module):
-            try:
-                _process_class(elem, module)
-            except ElegantClassMustBeFinal:
-                print(elem.name.value)
-                errors.append(
-                    f''
+    wrapper = cst.metadata.MetadataWrapper(module)
+    positions = wrapper.resolve(cst.metadata.PositionProvider)
+    violations = []
+    for node, pos in positions.items():
+        if not isinstance(node, cst.ClassDef):
+            continue
+        if _is_elegant_class(node, module):
+            if not _is_final(node, module):
+                violations.append(
+                    Violation(
+                        path,
+                        pos.start.line,
+                        pos.start.column,
+                        'Elegant object must be final'
+                    ),
                 )
+    for vltn in violations:
+        print('{0}:{1}:{2} {3}'.format(vltn.module, vltn.line, vltn.column, vltn.text))
 
 
 @app.command()
