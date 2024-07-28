@@ -25,11 +25,12 @@
 import ast
 from collections.abc import Generator
 from typing import final
+from astpretty import pprint
 
 
 @final
-class ClassVisitor(ast.NodeVisitor):
-    """Class visitor for checking that all methods has override decorator."""
+class CodeFreeCtorVisitor(ast.NodeVisitor):
+    """CodeFreeCtorVisitor."""
 
     def __init__(self) -> None:
         """Ctor."""
@@ -37,7 +38,18 @@ class ClassVisitor(ast.NodeVisitor):
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
         """Visit by classes."""
+        for elem in node.body:
+            if not isinstance(elem, ast.FunctionDef) and not isinstance(elem, ast.AsyncFunctionDef):
+                continue
+            if elem.name == '__init__':
+                for e in elem.body:
+                    self._iter_ctor_ast(e)
         self.generic_visit(node)
+
+    def _iter_ctor_ast(self, node):
+        if not (isinstance(node, ast.Return) or isinstance(node, ast.Assign)):
+            self.problems.append((node.lineno, node.col_offset, 'PEO100 Ctor contain code'))
+        pprint(node)
 
 
 @final
@@ -47,10 +59,11 @@ class Plugin:
     def __init__(self, tree: ast.AST) -> None:
         """Ctor."""
         self._tree = tree
+        self._visitors = [CodeFreeCtorVisitor()]
 
     def run(self) -> Generator[tuple[int, int, str, type], None, None]:
         """Entry."""
-        visitor = ClassVisitor()
-        visitor.visit(self._tree)
-        for line in visitor.problems:  # noqa: WPS526
-            yield (line[0], line[1], 'PEO100 ...', type(self))
+        for visitor in self._visitors:
+            visitor.visit(self._tree)
+            for line in visitor.problems:  # noqa: WPS526
+                yield (line[0], line[1], 'PEO100 ...', type(self))
