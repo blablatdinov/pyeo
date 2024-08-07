@@ -136,17 +136,17 @@ files = [
 
 [[package]]
 name = "deltaver"
-version = "0.2.2"
+version = "0.2.3"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "deltaver-0.2.2-py3-none-any.whl", hash = "sha256:0a533e3d5374ade3a5ebdbbe6e2cafc16d49c7d42f70c7d6218eec0da12d14a2"},
-    {file = "deltaver-0.2.2.tar.gz", hash = "sha256:6d9e35452873fb85fe7e6ff09a6ef97de8f112608a2092275128dc6376c78fd8"},
+    {file = "deltaver-0.2.3-py3-none-any.whl", hash = "sha256:136f99187a4989ca8beed756d62c77f685ea9128d5b095b5da941ba4b8af165f"},
+    {file = "deltaver-0.2.3.tar.gz", hash = "sha256:ed8fb959b92cb8abda5fa3631000c625c49a78627881c3a49bda7973ff93f125"},
 ]
 
 [package.dependencies]
-attrs = ">=23.0,<24.0"
+attrs = ">=23.0"
 httpx = ">=0,<1"
 packaging = ">=23,<25"
 rich = ">=13.0,<14.0"
@@ -1339,4 +1339,4 @@ typing_extensions = ">=4.0,<5.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.13"
-content-hash = "c740543a0f5692dfc4d47b33c319dd1676660cbdee25e628acc7fcb1523581d1"
+content-hash = "7102f4f69b8155752e57255d7a78e011f4b0a3445f18501bbe131069a5f6e25a"
