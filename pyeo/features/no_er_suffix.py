@@ -24,7 +24,6 @@
 
 import ast
 from typing import final
-from astpretty import pprint
 
 from pyeo.utils.class_is_protocol import class_is_protocol
 
@@ -33,12 +32,13 @@ from pyeo.utils.class_is_protocol import class_is_protocol
 class NoErSuffix(ast.NodeVisitor):
     """NoErSuffix."""
 
-    def __init__(self) -> None:
+    def __init__(self, options) -> None:
         """Ctor."""
+        self._options = options
         self.problems: list[tuple[int, int, str]] = []
         self._whitelist = {
             'User',
-        }
+        } | set(self._options.available_er_names)
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
         """Visit by classes.

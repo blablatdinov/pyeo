@@ -26,6 +26,8 @@ import ast
 from collections.abc import Generator
 from typing import final
 
+from flake8.options.manager import OptionManager
+
 from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
 from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
 from pyeo.features.no_er_suffix import NoErSuffix
@@ -35,10 +37,25 @@ from pyeo.features.no_er_suffix import NoErSuffix
 class Plugin:
     """Flake8 plugin."""
 
+    @classmethod
+    def parse_options(cls, options) -> None:
+        """Parses registered options for providing them to each visitor."""
+        cls._options = options
+
     def __init__(self, tree: ast.AST) -> None:
         """Ctor."""
         self._tree = tree
-        self._visitors = [CodeFreeCtorVisitor(), NoMutableObjectsVisitor(), NoErSuffix()]
+        self._visitors = [CodeFreeCtorVisitor(self._options), NoMutableObjectsVisitor(self._options), NoErSuffix(self._options)]
+
+    @classmethod
+    def add_options(cls, parser: OptionManager) -> None:
+        parser.add_option(
+            long_option_name='--available-er-names',
+            default=[],
+            comma_separated_list=True,
+            help='Available "er" names',
+            parse_from_config=True,
+        )
 
     def run(self) -> Generator[tuple[int, int, str, type], None, None]:
         """Entry."""
