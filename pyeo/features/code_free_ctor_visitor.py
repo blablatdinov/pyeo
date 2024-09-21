@@ -20,28 +20,28 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# flake8: noqa: WPS232
-
 import ast
-from collections.abc import Generator
 from typing import final
-from astpretty import pprint
-
-from features.code_free_ctor_visitor import CodeFreeCtorVisitor
 
 
 @final
-class Plugin:
-    """Flake8 plugin."""
+class CodeFreeCtorVisitor(ast.NodeVisitor):
+    """CodeFreeCtorVisitor."""
 
-    def __init__(self, tree: ast.AST) -> None:
+    def __init__(self) -> None:
         """Ctor."""
-        self._tree = tree
-        self._visitors = [CodeFreeCtorVisitor()]
+        self.problems: list[tuple[int, int, str]] = []
 
-    def run(self) -> Generator[tuple[int, int, str, type], None, None]:
-        """Entry."""
-        for visitor in self._visitors:
-            visitor.visit(self._tree)
-            for line in visitor.problems:  # noqa: WPS526
-                yield (line[0], line[1], line[2], type(self))
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
+        """Visit by classes."""
+        for elem in node.body:
+            if not isinstance(elem, ast.FunctionDef) and not isinstance(elem, ast.AsyncFunctionDef):
+                continue
+            if elem.name == '__init__':
+                for e in elem.body:
+                    self._iter_ctor_ast(e)
+        self.generic_visit(node)
+
+    def _iter_ctor_ast(self, node):
+        if not (isinstance(node, ast.Return) or isinstance(node, ast.Assign)):
+            self.problems.append((node.lineno, node.col_offset, 'PEO100 Ctor contain code'))
