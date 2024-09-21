@@ -91,4 +91,4 @@ def test_invalid(plugin_run):
         '        return 5',
     ]))
 
-    assert got == [(5, 8, 'PEO100 Ctor contain code')]
+    assert got == [(1, 0, 'PEO200 class must be frozen')]
