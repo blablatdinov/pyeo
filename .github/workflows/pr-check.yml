@@ -89,9 +89,7 @@ jobs:
       - name: Install deps
         run: cd ${{ github.workspace }}/quranbot-aiogram && poetry install && poetry add ${{ github.workspace }}/checker
       - name: Test
-        run: cd ${{ github.workspace }}/quranbot-aiogram && poetry run mypy src
-      - name: Test refurb
-        run: cd ${{ github.workspace }}/quranbot-aiogram && poetry run refurb src
+        run: cd ${{ github.workspace }}/quranbot-aiogram && poetry run flake8 src
 
   # lint:
   #   - uses: actions/checkout@v4
