@@ -20,6 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+"""CodeFreeCtorVisitor."""
+
 import ast
 from typing import final
 
@@ -33,15 +35,18 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         self.problems: list[tuple[int, int, str]] = []
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
-        """Visit by classes."""
+        """Visit by classes.
+
+        :param node: ast.ClassDef
+        """
         for elem in node.body:
             if not isinstance(elem, ast.FunctionDef) and not isinstance(elem, ast.AsyncFunctionDef):
                 continue
             if elem.name == '__init__':
-                for e in elem.body:
-                    self._iter_ctor_ast(e)
+                for body_elem in elem.body:
+                    self._iter_ctor_ast(body_elem)
         self.generic_visit(node)
 
     def _iter_ctor_ast(self, node):
-        if not (isinstance(node, ast.Return) or isinstance(node, ast.Assign)):
+        if not isinstance(node, (ast.Return, ast.Assign)):
             self.problems.append((node.lineno, node.col_offset, 'PEO100 Ctor contain code'))

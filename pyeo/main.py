@@ -25,9 +25,8 @@
 import ast
 from collections.abc import Generator
 from typing import final
-from astpretty import pprint
 
-from features.code_free_ctor_visitor import CodeFreeCtorVisitor
+from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
 
 
 @final
