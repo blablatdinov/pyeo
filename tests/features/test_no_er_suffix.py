@@ -20,29 +20,40 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# flake8: noqa: WPS232
+import pytest
 
-import ast
-from collections.abc import Generator
-from typing import final
-
-from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
-from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
 from pyeo.features.no_er_suffix import NoErSuffix
 
 
-@final
-class Plugin:
-    """Flake8 plugin."""
+@pytest.mark.parametrize('suffix', [
+    'er',
+])
+def test_forbidden(plugin_run, suffix):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse{0}:'.format(suffix),
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [NoErSuffix()],
+    )
 
-    def __init__(self, tree: ast.AST) -> None:
-        """Ctor."""
-        self._tree = tree
-        self._visitors = [CodeFreeCtorVisitor(), NoMutableObjectsVisitor(), NoErSuffix()]
+    assert got == [(1, 0, 'PEO300 "er" suffix forbidden')]
 
-    def run(self) -> Generator[tuple[int, int, str, type], None, None]:
-        """Entry."""
-        for visitor in self._visitors:
-            visitor.visit(self._tree)
-            for line in visitor.problems:  # noqa: WPS526
-                yield (line[0], line[1], line[2], type(self))
+
+@pytest.mark.parametrize('suffix', [
+    'User',
+])
+def test_whitelist(plugin_run, suffix):
+    got = plugin_run(
+        '\n'.join([
+            'class {0}(House):'.format(suffix),
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [NoErSuffix()],
+    )
+
+    assert not got

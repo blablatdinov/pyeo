@@ -20,29 +20,31 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# flake8: noqa: WPS232
+"""NoErSuffix."""
 
 import ast
-from collections.abc import Generator
 from typing import final
+from astpretty import pprint
 
-from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
-from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
-from pyeo.features.no_er_suffix import NoErSuffix
+from pyeo.utils.class_is_protocol import class_is_protocol
 
 
 @final
-class Plugin:
-    """Flake8 plugin."""
+class NoErSuffix(ast.NodeVisitor):
+    """NoErSuffix."""
 
-    def __init__(self, tree: ast.AST) -> None:
+    def __init__(self) -> None:
         """Ctor."""
-        self._tree = tree
-        self._visitors = [CodeFreeCtorVisitor(), NoMutableObjectsVisitor(), NoErSuffix()]
+        self.problems: list[tuple[int, int, str]] = []
+        self._whitelist = {
+            'User',
+        }
 
-    def run(self) -> Generator[tuple[int, int, str, type], None, None]:
-        """Entry."""
-        for visitor in self._visitors:
-            visitor.visit(self._tree)
-            for line in visitor.problems:  # noqa: WPS526
-                yield (line[0], line[1], line[2], type(self))
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
+        """Visit by classes.
+
+        :param node: ast.ClassDef
+        """
+        if node.name.endswith('er') and node.name not in self._whitelist:
+            self.problems.append((node.lineno, node.col_offset, 'PEO300 "er" suffix forbidden'))
+        self.generic_visit(node)
