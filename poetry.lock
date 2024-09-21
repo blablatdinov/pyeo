@@ -353,6 +353,20 @@ eradicate = ">=2.0,<3.0"
 flake8 = ">5"
 
 [[package]]
+name = "flake8-final"
+version = "0.0.3"
+description = "flake8 plugin for check and inheritance of implementations"
+optional = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "flake8_final-0.0.3-py3-none-any.whl", hash = "sha256:48d375a071c5d0193b5d698100d5751896337e9596ec541886c2895be7f19027"},
+    {file = "flake8_final-0.0.3.tar.gz", hash = "sha256:652c95616199aa4f1bf4ccb60c2cd944797e12dc21b0343f12534e24465b3c43"},
+]
+
+[package.dependencies]
+flake8 = ">=7.1,<8.0"
+
+[[package]]
 name = "flake8-isort"
 version = "6.1.1"
 description = "flake8 plugin that integrates isort"
@@ -369,6 +383,20 @@ isort = ">=5.0.0,<6"
 
 [package.extras]
 test = ["pytest"]
+
+[[package]]
+name = "flake8-override"
+version = "0.0.4"
+description = "This is how python package should look like!"
+optional = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "flake8_override-0.0.4-py3-none-any.whl", hash = "sha256:8d7585440161bf2868f455450d16c6d7178a0fbc71ac6d582b3c4fbf0bfcd84c"},
+    {file = "flake8_override-0.0.4.tar.gz", hash = "sha256:891571dc19786e59cabde6d1cf2a6f55df540fdd92e95d79265b027c60d21798"},
+]
+
+[package.dependencies]
+flake8 = ">=5.0.0"
 
 [[package]]
 name = "flake8-quotes"
@@ -1350,4 +1378,4 @@ typing_extensions = ">=4.0,<5.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.13"
-content-hash = "e669105ade5d173e68d30edec38e8819f557aaa08b7983db0fd10e3234bc16ec"
+content-hash = "4d36ad8573df7627f1fcbaa81561e49e820470e4ff8674d2e0c9ee608f6704b4"
