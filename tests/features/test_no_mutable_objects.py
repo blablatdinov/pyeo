@@ -20,28 +20,9 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import ast
-
 import pytest
 
-from pyeo.main import Plugin
-
-
-@pytest.fixture
-def plugin_run():
-    """Fixture for easy run plugin."""
-    def _plugin_run(code: str) -> list[tuple[int, int, str]]:  # noqa: WPS430
-        """Plugin run result."""
-        plugin = Plugin(ast.parse(code))
-        res = []
-        for viol in plugin.run():
-            res.append((
-                viol[0],
-                viol[1],
-                viol[2],
-            ))
-        return res
-    return _plugin_run
+from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
 
 
 @pytest.mark.parametrize('base_class', [
@@ -54,11 +35,14 @@ def plugin_run():
     'Protocol[Mammal]',
 ])
 def test_protocol(plugin_run, base_class):
-    got = plugin_run('\n'.join([
-        'class HttpHouse({0}):'.format(base_class),
-        '',
-        '    def area(self) -> int: ...',
-    ]))
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse({0}):'.format(base_class),
+            '',
+            '    def area(self) -> int: ...',
+        ]),
+        [NoMutableObjectsVisitor()],
+    )
 
     assert not got
 
@@ -72,23 +56,29 @@ def test_protocol(plugin_run, base_class):
     '@frozen()',
 ])
 def test_valid(plugin_run, decorator):
-    got = plugin_run('\n'.join([
-        decorator,
-        'class HttpHouse(House):',
-        '',
-        '    def area(self) -> int:',
-        '        return 5',
-    ]))
+    got = plugin_run(
+        '\n'.join([
+            decorator,
+            'class HttpHouse(House):',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [NoMutableObjectsVisitor()],
+    )
 
     assert not got
 
 
 def test_invalid(plugin_run):
-    got = plugin_run('\n'.join([
-        'class HttpHouse(House):',
-        '',
-        '    def area(self) -> int:',
-        '        return 5',
-    ]))
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [NoMutableObjectsVisitor()],
+    )
 
     assert got == [(1, 0, 'PEO200 class must be frozen')]

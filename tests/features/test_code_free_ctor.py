@@ -20,63 +20,48 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import ast
-
-import pytest
-
-from pyeo.main import Plugin
-
-
-@pytest.fixture
-def plugin_run():
-    """Fixture for easy run plugin."""
-    def _plugin_run(code: str) -> list[tuple[int, int, str]]:  # noqa: WPS430
-        """Plugin run result."""
-        plugin = Plugin(ast.parse(code))
-        res = []
-        for viol in plugin.run():
-            res.append((
-                viol[0],
-                viol[1],
-                viol[2],
-            ))
-        return res
-    return _plugin_run
+from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
 
 
 def test(plugin_run):
-    got = plugin_run('\n'.join([
-        'class HttpHouse(House):',
-        '',
-        '    def __init__(self, cost):',
-        '        self._cost = cost',
-        '',
-        '    @classmethod',
-        '    def secondary_ctor(cls, cost):',
-        '        return cls(cost)',
-        '',
-        '    def area(self) -> int:',
-        '        return 5',
-    ]))
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def __init__(self, cost):',
+            '        self._cost = cost',
+            '',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost):',
+            '        return cls(cost)',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [CodeFreeCtorVisitor()]
+    )
 
     assert not got
 
 
 def test_ctor_with_code(plugin_run):
-    got = plugin_run('\n'.join([
-        'class HttpHouse(House):',
-        '',
-        '    def __init__(self, cost):',
-        '        self._cost = cost',
-        '        if cost < 0:',
-        '            self._cost = 0',
-        '',
-        '    @classmethod',
-        '    def secondary_ctor(cls, cost):',
-        '        return cls(cost)',
-        '',
-        '    def area(self) -> int:',
-        '        return 5',
-    ]))
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def __init__(self, cost):',
+            '        self._cost = cost',
+            '        if cost < 0:',
+            '            self._cost = 0',
+            '',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost):',
+            '        return cls(cost)',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [CodeFreeCtorVisitor()]
+    )
 
     assert got == [(5, 8, 'PEO100 Ctor contain code')]
