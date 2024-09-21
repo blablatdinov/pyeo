@@ -33,8 +33,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
-mypy = "^1.6.0"
-attrs = ">=23"
+flake8 = "^7.1"
+flake8-final = "*"
+flake8-override = "*"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = "0.19.2"
