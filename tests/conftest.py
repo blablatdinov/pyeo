@@ -21,18 +21,19 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import ast
+from typing import List
 
 import pytest
 
-from pyeo.main import Plugin
+from pyeo.fk_plugin import FkPlugin
 
 
 @pytest.fixture
 def plugin_run():
     """Fixture for easy run plugin."""
-    def _plugin_run(code: str) -> list[tuple[int, int, str]]:  # noqa: WPS430
+    def _plugin_run(code: str, visitors: List[ast.NodeVisitor]) -> list[tuple[int, int, str]]:  # noqa: WPS430
         """Plugin run result."""
-        plugin = Plugin(ast.parse(code))
+        plugin = FkPlugin(ast.parse(code), visitors)
         res = []
         for viol in plugin.run():
             res.append((
@@ -42,41 +43,3 @@ def plugin_run():
             ))
         return res
     return _plugin_run
-
-
-def test(plugin_run):
-    got = plugin_run('\n'.join([
-        'class HttpHouse(House):',
-        '',
-        '    def __init__(self, cost):',
-        '        self._cost = cost',
-        '',
-        '    @classmethod',
-        '    def secondary_ctor(cls, cost):',
-        '        return cls(cost)',
-        '',
-        '    def area(self) -> int:',
-        '        return 5',
-    ]))
-
-    assert not got
-
-
-def test_ctor_with_code(plugin_run):
-    got = plugin_run('\n'.join([
-        'class HttpHouse(House):',
-        '',
-        '    def __init__(self, cost):',
-        '        self._cost = cost',
-        '        if cost < 0:',
-        '            self._cost = 0',
-        '',
-        '    @classmethod',
-        '    def secondary_ctor(cls, cost):',
-        '        return cls(cost)',
-        '',
-        '    def area(self) -> int:',
-        '        return 5',
-    ]))
-
-    assert got == [(5, 8, 'PEO100 Ctor contain code')]

@@ -24,20 +24,17 @@
 
 import ast
 from collections.abc import Generator
-from typing import final
-
-from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
-from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
+from typing import final, List
 
 
 @final
-class Plugin:
-    """Flake8 plugin."""
+class FkPlugin:
+    """Fake flake8 plugin."""
 
-    def __init__(self, tree: ast.AST) -> None:
+    def __init__(self, tree: ast.AST, visitors: List[ast.NodeVisitor]) -> None:
         """Ctor."""
         self._tree = tree
-        self._visitors = [CodeFreeCtorVisitor(), NoMutableObjectsVisitor()]
+        self._visitors = visitors
 
     def run(self) -> Generator[tuple[int, int, str, type], None, None]:
         """Entry."""
