@@ -24,7 +24,6 @@
 
 import ast
 from typing import final
-from astpretty import pprint
 
 from pyeo.utils.class_is_protocol import class_is_protocol
 
