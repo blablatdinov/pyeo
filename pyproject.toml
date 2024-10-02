@@ -32,7 +32,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.plugins."flake8.extension"]
-FIN = "pyeo.main:Plugin"
+PEO = "pyeo.main:Plugin"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
