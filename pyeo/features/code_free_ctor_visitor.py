@@ -49,5 +49,5 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def _iter_ctor_ast(self, node):
-        if not isinstance(node, (ast.Return, ast.Assign, ast.Expr)):
+        if not isinstance(node, (ast.Return, ast.Assign, ast.Expr, ast.AnnAssign)):
             self.problems.append((node.lineno, node.col_offset, 'PEO100 Ctor contain code'))
