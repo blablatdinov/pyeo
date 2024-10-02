@@ -33,15 +33,21 @@ from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
     'OtherClass, Protocol',
     'OtherClass, t.Protocol',
     'Protocol[Mammal]',
+    'Exception',
+    'AppError',
+    'TypedDict',
+    'typing.TypedDict',
+    't.TypedDict',
+    'Enum',
 ])
-def test_protocol(plugin_run, base_class):
+def test_skip_with_base(plugin_run, base_class, options_factory):
     got = plugin_run(
         '\n'.join([
             'class HttpHouse({0}):'.format(base_class),
             '',
             '    def area(self) -> int: ...',
         ]),
-        [NoMutableObjectsVisitor()],
+        [NoMutableObjectsVisitor(options_factory())],
     )
 
     assert not got
@@ -55,7 +61,7 @@ def test_protocol(plugin_run, base_class):
     '@attrs.frozen()',
     '@frozen()',
 ])
-def test_valid(plugin_run, decorator):
+def test_valid(plugin_run, decorator, options_factory):
     got = plugin_run(
         '\n'.join([
             decorator,
@@ -64,13 +70,13 @@ def test_valid(plugin_run, decorator):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [NoMutableObjectsVisitor()],
+        [NoMutableObjectsVisitor(options_factory())],
     )
 
     assert not got
 
 
-def test_invalid(plugin_run):
+def test_invalid(plugin_run, options_factory):
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -78,7 +84,7 @@ def test_invalid(plugin_run):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [NoMutableObjectsVisitor()],
+        [NoMutableObjectsVisitor(options_factory())],
     )
 
     assert got == [(1, 0, 'PEO200 class must be frozen')]

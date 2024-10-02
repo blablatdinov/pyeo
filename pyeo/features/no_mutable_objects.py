@@ -25,7 +25,7 @@
 import ast
 from typing import final
 
-from pyeo.utils.class_is_protocol import class_is_protocol
+from pyeo.utils.class_is_protocol import class_is_not_obj_factory
 
 
 @final
@@ -43,7 +43,7 @@ class NoMutableObjectsVisitor(ast.NodeVisitor):
         :param node: ast.ClassDef
         """
         frozen_found = False
-        if class_is_protocol(node):
+        if class_is_not_obj_factory(node):
             self.generic_visit(node)
             return
         for deco in node.decorator_list:
