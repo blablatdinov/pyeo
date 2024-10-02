@@ -45,6 +45,11 @@ class NoErSuffix(ast.NodeVisitor):
 
         :param node: ast.ClassDef
         """
-        if node.name.endswith('er') and node.name not in self._whitelist:
-            self.problems.append((node.lineno, node.col_offset, 'PEO300 "er" suffix forbidden'))
+        class_name = node.name
+        if class_name.endswith('er'):
+            for whitelist_suffix in self._whitelist:
+                if class_name.endswith(whitelist_suffix):
+                    break
+            else:
+                self.problems.append((node.lineno, node.col_offset, 'PEO300 "er" suffix forbidden'))
         self.generic_visit(node)
