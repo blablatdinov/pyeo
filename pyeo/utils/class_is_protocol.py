@@ -38,3 +38,64 @@ def class_is_protocol(node: ast.ClassDef) -> bool:
         if base.attr == 'Protocol':
             return True
     return False
+
+
+def class_is_typeddict(node: ast.ClassDef) -> bool:
+    for base in node.bases:
+        if isinstance(base, ast.Subscript):
+            if isinstance(base.value, ast.Name) and base.value.id == 'TypedDict':
+                return True
+        if isinstance(base, ast.Subscript):
+            if isinstance(base.value, ast.Name) and base.value.id != 'TypedDict':
+                continue
+        if isinstance(base, ast.Name) and base.id != 'TypedDict':
+            continue
+        if isinstance(base, ast.Name) and base.id == 'TypedDict':
+            return True
+        if base.attr == 'TypedDict':
+            return True
+    return False
+
+
+def class_is_enum(node: ast.ClassDef) -> bool:
+    for base in node.bases:
+        if isinstance(base, ast.Subscript):
+            if isinstance(base.value, ast.Name) and base.value.id.endswith('Enum'):
+                return True
+        if isinstance(base, ast.Subscript):
+            if isinstance(base.value, ast.Name) and not base.value.id.endswith('Enum'):
+                continue
+        if isinstance(base, ast.Name) and not base.id.endswith('Enum'):
+            continue
+        if isinstance(base, ast.Name) and base.id.endswith('Enum'):
+            return True
+        if base.attr.endswith('Enum'):
+            return True
+    return False
+
+
+def class_is_exception(node: ast.ClassDef) -> bool:
+    exception_name = lambda name: name.endswith('Exception') or name.endswith('Error')
+    for base in node.bases:
+        if isinstance(base, ast.Subscript):
+            if isinstance(base.value, ast.Name) and exception_name(base.value.id):
+                return True
+        if isinstance(base, ast.Subscript):
+            if isinstance(base.value, ast.Name) and not exception_name(base.value.id):
+                continue
+        if isinstance(base, ast.Name) and not exception_name(base.id):
+            continue
+        if isinstance(base, ast.Name) and exception_name(base.id):
+            return True
+        if exception_name(base.attr):
+            return True
+    return False
+
+
+def class_is_not_obj_factory(node: ast.ClassDef) -> bool:
+    return any([
+        class_is_protocol(node),
+        class_is_enum(node),
+        class_is_exception(node),
+        class_is_typeddict(node),
+    ])

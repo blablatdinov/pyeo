@@ -30,8 +30,9 @@ from typing import final
 class CodeFreeCtorVisitor(ast.NodeVisitor):
     """CodeFreeCtorVisitor."""
 
-    def __init__(self) -> None:
+    def __init__(self, options) -> None:
         """Ctor."""
+        self._options = options
         self.problems: list[tuple[int, int, str]] = []
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
@@ -48,5 +49,5 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def _iter_ctor_ast(self, node):
-        if not isinstance(node, (ast.Return, ast.Assign)):
+        if not isinstance(node, (ast.Return, ast.Assign, ast.Expr, ast.AnnAssign)):
             self.problems.append((node.lineno, node.col_offset, 'PEO100 Ctor contain code'))

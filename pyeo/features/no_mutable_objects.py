@@ -24,17 +24,17 @@
 
 import ast
 from typing import final
-from astpretty import pprint
 
-from pyeo.utils.class_is_protocol import class_is_protocol
+from pyeo.utils.class_is_protocol import class_is_not_obj_factory
 
 
 @final
 class NoMutableObjectsVisitor(ast.NodeVisitor):
     """NoMutableObjectsVisitor."""
 
-    def __init__(self) -> None:
+    def __init__(self, options) -> None:
         """Ctor."""
+        self._options = options
         self.problems: list[tuple[int, int, str]] = []
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
@@ -43,11 +43,10 @@ class NoMutableObjectsVisitor(ast.NodeVisitor):
         :param node: ast.ClassDef
         """
         frozen_found = False
-        if class_is_protocol(node):
+        if class_is_not_obj_factory(node):
             self.generic_visit(node)
             return
         for deco in node.decorator_list:
-            pprint(deco)
             if isinstance(deco, ast.Name) and deco.id == 'frozen':
                 frozen_found = True
                 break

@@ -20,33 +20,36 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-[tool.poetry]
-name = "eo-styleguide"
-packages = [
-    {include = "pyeo"}
-]
-version = "0.0.1-a15"
-description = "Pyeo is an advanced static analysis tool tailored specifically to enforce the principles advocated by Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure that your Python code adheres to the core tenets of elegance, simplicity, and maintainability."
-authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
-license = "MIT"
-readme = "README.md"
+"""NoErSuffix."""
 
-[tool.poetry.plugins."flake8.extension"]
-PEO = "pyeo.main:Plugin"
+import ast
+from typing import final
 
-[tool.poetry.dependencies]
-python = ">=3.9,<3.13"
-flake8 = "^7.1"
-flake8-final = "*"
-flake8-override = "*"
+from pyeo.utils.class_is_protocol import class_is_protocol
 
-[tool.poetry.group.dev.dependencies]
-wemake-python-styleguide = "0.19.2"
-pytest-mypy-plugins = "3.1.2"
-flake8-copyright = "0.2.4"
-deltaver = "0.2.2"
-astpretty = "3.0.0"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+@final
+class NoErSuffix(ast.NodeVisitor):
+    """NoErSuffix."""
+
+    def __init__(self, options) -> None:
+        """Ctor."""
+        self._options = options
+        self.problems: list[tuple[int, int, str]] = []
+        self._whitelist = {
+            'User',
+        } | set(self._options.available_er_names)
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
+        """Visit by classes.
+
+        :param node: ast.ClassDef
+        """
+        class_name = node.name
+        if class_name.endswith('er'):
+            for whitelist_suffix in self._whitelist:
+                if class_name.endswith(whitelist_suffix):
+                    break
+            else:
+                self.problems.append((node.lineno, node.col_offset, 'PEO300 "er" suffix forbidden'))
+        self.generic_visit(node)

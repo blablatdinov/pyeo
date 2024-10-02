@@ -23,7 +23,7 @@
 from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
 
 
-def test(plugin_run):
+def test(plugin_run, options_factory):
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -38,13 +38,56 @@ def test(plugin_run):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor()]
+        [CodeFreeCtorVisitor(options_factory())]
     )
 
     assert not got
 
 
-def test_ctor_with_code(plugin_run):
+def test_ctor_docstring(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def __init__(self, cost):',
+            '        """Ctor."""',
+            '        self._cost = cost',
+            '',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost):',
+            '        return cls(cost)',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())]
+    )
+
+    assert not got
+
+
+def test_ctor_typehint(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def __init__(self, cost):',
+            '        self._cost: int | None = None',
+            '',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost):',
+            '        return cls(cost)',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())]
+    )
+
+    assert not got
+
+
+def test_ctor_with_code(plugin_run, options_factory):
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -61,7 +104,7 @@ def test_ctor_with_code(plugin_run):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor()]
+        [CodeFreeCtorVisitor(options_factory())]
     )
 
     assert got == [(5, 8, 'PEO100 Ctor contain code')]
