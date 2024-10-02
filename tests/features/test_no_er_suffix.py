@@ -20,22 +20,15 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import attrs
 import pytest
 
 from pyeo.features.no_er_suffix import NoErSuffix
 
 
-@attrs.define(frozen=True)
-class _Options:
-
-    available_er_names: list[str]
-
-
 @pytest.mark.parametrize('suffix', [
     'er',
 ])
-def test_forbidden(plugin_run, suffix):
+def test_forbidden(plugin_run, suffix, options_factory):
     got = plugin_run(
         '\n'.join([
             'class HttpHouse{0}:'.format(suffix),
@@ -43,7 +36,7 @@ def test_forbidden(plugin_run, suffix):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [NoErSuffix(_Options([]))],
+        [NoErSuffix(options_factory())],
     )
 
     assert got == [(1, 0, 'PEO300 "er" suffix forbidden')]
@@ -52,7 +45,7 @@ def test_forbidden(plugin_run, suffix):
 @pytest.mark.parametrize('suffix', [
     'User',
 ])
-def test_whitelist(plugin_run, suffix):
+def test_whitelist(plugin_run, suffix, options_factory):
     got = plugin_run(
         '\n'.join([
             'class {0}(House):'.format(suffix),
@@ -60,7 +53,7 @@ def test_whitelist(plugin_run, suffix):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [NoErSuffix(_Options([]))],
+        [NoErSuffix(options_factory())],
     )
 
     assert not got
@@ -69,7 +62,7 @@ def test_whitelist(plugin_run, suffix):
 @pytest.mark.parametrize('suffix', [
     'Answer',
 ])
-def test_whitelist_from_options(plugin_run, suffix):
+def test_whitelist_from_options(plugin_run, suffix, options_factory):
     got = plugin_run(
         '\n'.join([
             'class Prefix{0}(House):'.format(suffix),
@@ -77,7 +70,7 @@ def test_whitelist_from_options(plugin_run, suffix):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [NoErSuffix(_Options([suffix]))],
+        [NoErSuffix(options_factory([suffix]))],
     )
 
     assert not got

@@ -23,9 +23,16 @@
 import ast
 from typing import List
 
+import attrs
 import pytest
 
 from pyeo.fk_plugin import FkPlugin
+
+
+@attrs.define(frozen=True)
+class _Options:
+
+    available_er_names: list[str]
 
 
 @pytest.fixture
@@ -43,3 +50,12 @@ def plugin_run():
             ))
         return res
     return _plugin_run
+
+
+@pytest.fixture
+def options_factory():
+    def _options_factory(available_er_names: list[str] = None) -> _Options:  # noqa: WPS430
+        if not available_er_names:
+            available_er_names = []
+        return _Options(available_er_names=available_er_names)
+    return _options_factory
