@@ -38,6 +38,7 @@ class NoErSuffix(ast.NodeVisitor):
         self.problems: list[tuple[int, int, str]] = []
         self._whitelist = {
             'User',
+            'Identifier',
         } | set(self._options.available_er_names)
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
