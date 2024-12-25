@@ -1377,5 +1377,5 @@ typing_extensions = ">=4.0,<5.0"
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.9,<3.13"
-content-hash = "4d36ad8573df7627f1fcbaa81561e49e820470e4ff8674d2e0c9ee608f6704b4"
+python-versions = "^3.9"
+content-hash = "a387cb1e712b28455d0b3106490c26a398a1d6195a7f6a63fbf4849cd2479149"
