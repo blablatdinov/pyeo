@@ -24,7 +24,7 @@
 
 import ast
 from collections.abc import Generator
-from typing import final, List
+from typing import List, final
 
 
 @final
