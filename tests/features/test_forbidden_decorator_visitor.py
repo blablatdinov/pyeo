@@ -20,33 +20,33 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""CodeFreeCtorVisitor."""
-
-import ast
-from typing import final
+from pyeo.features.forbidden_decorator_visitor import ForbiddenDecoratorVisitor
 
 
-@final
-class CodeFreeCtorVisitor(ast.NodeVisitor):
-    """CodeFreeCtorVisitor."""
+def test_valid(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def double_cost(self):',
+            '        return self.cost * 2',
+        ]),
+        [ForbiddenDecoratorVisitor(options_factory())]
+    )
 
-    def __init__(self, options) -> None:
-        """Ctor."""
-        self.problems: list[tuple[int, int, str]] = []
+    assert not got
 
-    def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901
-        """Visit by classes.
 
-        :param node: ast.ClassDef
-        """
-        for elem in node.body:
-            if not isinstance(elem, ast.FunctionDef) and not isinstance(elem, ast.AsyncFunctionDef):
-                continue
-            if elem.name == '__init__':
-                for body_elem in elem.body:
-                    self._iter_ctor_ast(body_elem)
-        self.generic_visit(node)
+def test_staticmethod(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    @staticmethod',
+            '    def double_cost(cost):',
+            '        return cost * 2',
+        ]),
+        [ForbiddenDecoratorVisitor(options_factory())]
+    )
 
-    def _iter_ctor_ast(self, node):
-        if not isinstance(node, (ast.Return, ast.Assign, ast.Expr, ast.AnnAssign)):
-            self.problems.append((node.lineno, node.col_offset, 'PEO100 Ctor contain code'))
+    assert got == [(4, 4, 'PEO400 Staticmethod is forbidden')]
