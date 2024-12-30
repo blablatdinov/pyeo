@@ -70,10 +70,10 @@ jobs:
         with:
           repository: "blablatdinov/quranbot-aiogram"
           path: ${{ github.workspace }}/quranbot-aiogram
-      - name: Setup python 3.13
+      - name: Setup python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.12"
       - name: Install Poetry
         uses: snok/install-poetry@v1.3.4
         with:
@@ -85,7 +85,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .venv
-          key: venv-3.13-${{ hashFiles('**/poetry.lock') }}
+          key: venv-3.12-${{ hashFiles('**/poetry.lock') }}
       - name: Install deps
         run: cd ${{ github.workspace }}/quranbot-aiogram && poetry install && poetry add ${{ github.workspace }}/checker
       - name: Test
