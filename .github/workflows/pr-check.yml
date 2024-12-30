@@ -33,7 +33,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        python_version: ["3.8", "3.12"]
+        python_version: ["3.8", "3.13"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -96,7 +96,7 @@ jobs:
   #   - name: Set up Python
   #     uses: actions/setup-python@v4
   #     with:
-  #       python-version: "3.12.0"
+  #       python-version: "3.13"
   #   - name: Install Poetry
   #     uses: snok/install-poetry@v1.3.4
   #     with:
@@ -108,7 +108,7 @@ jobs:
   #     uses: actions/cache@v3
   #     with:
   #       path: .venv
-  #       key: venv-3.12-${{ hashFiles('**/poetry.lock') }}
+  #       key: venv-3.13-${{ hashFiles('**/poetry.lock') }}
   #   - name: Install dependencies
   #     if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
   #   - name: flake8
