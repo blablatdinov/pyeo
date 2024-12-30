@@ -29,8 +29,8 @@ from typing import final
 from flake8.options.manager import OptionManager
 
 from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
-from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
 from pyeo.features.no_er_suffix import NoErSuffix
+from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
 
 
 @final
