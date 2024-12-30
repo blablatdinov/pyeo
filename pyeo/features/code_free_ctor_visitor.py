@@ -32,7 +32,6 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
 
     def __init__(self, options) -> None:
         """Ctor."""
-        self._options = options
         self.problems: list[tuple[int, int, str]] = []
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802, WPS231, C901

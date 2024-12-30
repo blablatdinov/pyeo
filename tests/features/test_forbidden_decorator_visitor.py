@@ -20,25 +20,33 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# flake8: noqa: WPS232
-
-import ast
-from collections.abc import Generator
-from typing import List, final
+from pyeo.features.forbidden_decorator_visitor import ForbiddenDecoratorVisitor
 
 
-@final
-class FkPlugin:
-    """Fake flake8 plugin."""
+def test_valid(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def double_cost(self):',
+            '        return self.cost * 2',
+        ]),
+        [ForbiddenDecoratorVisitor(options_factory())]
+    )
 
-    def __init__(self, tree: ast.AST, visitors: List[ast.NodeVisitor]) -> None:
-        """Ctor."""
-        self._tree = tree
-        self._visitors = visitors
+    assert not got
 
-    def run(self) -> Generator[tuple[int, int, str, type], None, None]:
-        """Entry."""
-        for visitor in self._visitors:
-            visitor.visit(self._tree)
-            for line in visitor.problems:  # noqa: WPS526
-                yield (line[0], line[1], line[2], type(self))
+
+def test_staticmethod(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    @staticmethod',
+            '    def double_cost(cost):',
+            '        return cost * 2',
+        ]),
+        [ForbiddenDecoratorVisitor(options_factory())]
+    )
+
+    assert got == [(4, 4, 'PEO400 Staticmethod is forbidden')]

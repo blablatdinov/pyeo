@@ -20,25 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# flake8: noqa: WPS232
+"""ForbiddenDecoratorVisitor."""
 
 import ast
-from collections.abc import Generator
-from typing import List, final
+from typing import final
 
 
 @final
-class FkPlugin:
-    """Fake flake8 plugin."""
+class ForbiddenDecoratorVisitor(ast.NodeVisitor):
+    """ForbiddenDecoratorVisitor."""
 
-    def __init__(self, tree: ast.AST, visitors: List[ast.NodeVisitor]) -> None:
+    def __init__(self, options) -> None:
         """Ctor."""
-        self._tree = tree
-        self._visitors = visitors
+        self.problems: list[tuple[int, int, str]] = []
 
-    def run(self) -> Generator[tuple[int, int, str, type], None, None]:
-        """Entry."""
-        for visitor in self._visitors:
-            visitor.visit(self._tree)
-            for line in visitor.problems:  # noqa: WPS526
-                yield (line[0], line[1], line[2], type(self))
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # noqa: N802, WPS231, C901
+        """Visit by methods.
+
+        :param node: ast.ClassDef
+        """
+        for deco in node.decorator_list:
+            if deco.id == 'staticmethod':
+                self.problems.append((node.lineno, node.col_offset, 'PEO400 Staticmethod is forbidden'))
+        self.generic_visit(node)
