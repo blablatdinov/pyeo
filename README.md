@@ -25,29 +25,16 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 [![wemake-python-styleguide](https://img.shields.io/badge/style-wemake-000000.svg)](https://github.com/wemake-services/wemake-python-styleguide)
 
-Pyeo  is an advanced static analysis tool tailored specifically to enforce the principles advocated by
-Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure
-that your Python code adheres to the core tenets of elegance, simplicity, and maintainability.
-
-Pyeo is proudly based on the robust foundation of [Mypy](https://github.com/python/mypy), a leading static type checker for Python. Mypy not only provides excellent type analysis capabilities but also offers a convenient-to-use API and abstractions for working with Python AST (Abstract Syntax Tree). This unique combination empowers Pyeo a seamless static analysis experience, allowing for a deeper understanding of your code's structure and semantics.
+Pyeo is an advanced static analysis tool tailored specifically to enforce the
+principles advocated by Elegant Objects (elegantobjects.org) in Python projects.
+It serves as a quality control instrument to ensure
+that your Python code adheres to the core tenets of elegance, simplicity,
+and maintainability.
 
 The project is inspired by the team that made fun of me because of the lego build. STT lambda ❤️️
 
-
 ```bash
 pip install eo-styleguide
-```
-
-setup.cfg/mypy.ini
-```
-[mypy]
-plugins = pyeo.main
-```
-
-pyproject.toml
-```
-[tool.mypy]
-plugins = ["pyeo.main"]
 ```
 
 Simple example of usage:
@@ -56,21 +43,22 @@ Simple example of usage:
 from typing import Protocol, final
 
 import attrs
-# use the "elegant" decorator so that the plugin finds classes to check
-from pyeo import elegant  
 
 
 class House(Protocol):
     def area(self) -> int: ...
 
 
-@elegant
 @final
 @attrs.define(frozen=True)
 class HttpHouse(House):
 
     def area(self) -> int:
         return 10
+```
+
+```bash
+mypy file.py && flake8 file.py
 ```
 
 ## Contents
@@ -98,7 +86,12 @@ class HttpHouse(House):
 
 ## No null
 
-Mypy helps prevent `AttributeError` and other type-related errors by providing static type checking for Python code. It allows specifying variable types, function arguments, and return types to catch potential type issues before the program runs. By using Mypy, developers can identify and fix problems related to attribute access and other type mismatches, leading to improved code quality and easier maintenance.
+Mypy helps prevent `AttributeError` and other type-related errors by providing
+static type checking for Python code. It allows specifying variable types,
+function arguments, and return types to catch potential type issues before the
+program runs. By using Mypy, developers can identify and fix problems related
+to attribute access and other type mismatches, leading to improved code
+quality and easier maintenance.
 
 Example:
 
@@ -130,29 +123,50 @@ def get_by_id(user_id: int) -> Employee | None: ...
 
 ## No code in constructors
 
-You can use `@attrs.define` for skip this. It decorator create ctor for your classes automatically. However, we implement check that your primary and secondary ctors not contain code, with the exception of attributes assingment. Please check [NoCodeInCtorFeature](/pyeo/features/no_code_in_ctors.py).
+You can use `@attrs.define` for skip this. It decorator create ctor for your
+classes automatically. However, we implement check that your primary and
+secondary ctors not contain code, with the exception of attributes assingment.
+Please check [CodeFreeCtorVisitor](pyeo/features/code_free_ctor_visitor.py).
 
 ## No getters and setters
 
-Actually we realize functional for to prohibit the use of `@property` and `@setter` method decorators. You can use `@attrs.define(frozen=True)` in order to make an object immutable.
+Actually we realize functional for to prohibit the use of `@property` and
+`@setter` method decorators. You can use `@attrs.define(frozen=True)` in order
+to make an object immutable.
 
-Prohibit the use of `@property` decorator not protect from evil of getters, so if you can ideas how we can implement more complex check, create issue please.
+Prohibit the use of `@property` decorator not protect from evil of getters,
+so if you can ideas how we can implement more complex check,
+create issue please.
 
 ## No mutable objects
 
-`attrs.define(frozen=True)` is a parameter used in the attrs library to create classes with attributes that cannot be modified after the instance is created (i.e., immutable or "frozen" classes).
-The [attrs](https://www.attrs.org/en/stable/) library allows defining classes using the `@attr.s` decorator or by explicitly calling the `attr.define` function, and `frozen=True` is one of the parameters for specifying attribute behavior in the class. 
-When you use `attrs.define(frozen=True)` for a class, all its attributes become read-only after the instance is created, making the class "frozen" or "immutable," preventing any changes to its attribute values.
+`attrs.define(frozen=True)` is a parameter used in the attrs library to create
+classes with attributes that cannot be modified after the instance is created
+(i.e., immutable or "frozen" classes).
+
+The [attrs](https://www.attrs.org/en/stable/) library allows defining classes
+using the `@attr.s` decorator or by explicitly calling the `attr.define`
+function, and `frozen=True` is one of the parameters for specifying attribute
+behavior in the class. 
+
+When you use `attrs.define(frozen=True)` for a class, all its attributes become
+read-only after the instance is created, making the class "frozen" or
+"immutable," preventing any changes to its attribute values.
+
+See [NoMutableObjectsVisitor](pyeo/features/no_mutable_objects.py)
 
 ## No er suffix
 
-We check you class name not contain `-er` or `(C|c)lient` suffix by check in [NoErNamesFeature](/pyeo/features/no_er_names.py)
+We check you class name not contain `-er` or `(C|c)lient` suffix by check in
+[NoErNamesFeature](/pyeo/features/no_er_names.py)
 
 ## No static methods
 
-Check by [NoStaticmethodsFeature](/pyeo/features/no_staticmethods.py)
+TODO
 
 ## No reflection
+
+TODO
 
 Prohibit next function calls:
 - `isinstance`
@@ -162,9 +176,12 @@ Prohibit next function calls:
 
 ## No public methods without a contract
 
-In Python, `typing.Protocol` is a class introduced in Python 3.8 as part of the typing module. It is used to define structural subtyping or "duck typing" for classes, which allows you to create interfaces without using explicit inheritance.
+In Python, `typing.Protocol` is a class introduced in Python 3.8 as part of the
+typing module. It is used to define structural subtyping or "duck typing" for
+classes, which allows you to create interfaces without using explicit inheritance.
 
-[EachMethodHasProtocolFeature](/pyeo/features/method_has_protocol.py) rule check that all of public class methods has protocol.
+[flake8-override](https://github.com/blablatdinov/flake8-override) plugin check that all
+of public class methods has protocol.
 
 ## No statements in tests
 
@@ -176,4 +193,5 @@ Detect using ORM or ActiveRecord tools on project by design/code review
 
 ## No inheritance
 
-Each `@elegant` object must be `typing.final`. Check by [FinalClassFeature](/pyeo/features/final_object.py)
+Each class must be `typing.final`.
+Check by [flake8-final](https://github.com/blablatdinov/flake8-final)
