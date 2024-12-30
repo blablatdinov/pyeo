@@ -42,8 +42,6 @@ flake8-override = "*"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = "0.19.2"
-pytest-mypy-plugins = "3.1.2"
-flake8-copyright = "0.2.4"
 deltaver = "0.2.2"
 astpretty = "3.0.0"
 
