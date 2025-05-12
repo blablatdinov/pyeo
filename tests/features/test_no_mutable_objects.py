@@ -60,6 +60,8 @@ def test_skip_with_base(plugin_run, base_class, options_factory):
     '@frozen',
     '@attrs.frozen()',
     '@frozen()',
+    '@dataclass(frozen=True)',
+    '@dataclasses.dataclass(frozen=True)',
 ])
 def test_valid(plugin_run, decorator, options_factory):
     got = plugin_run(

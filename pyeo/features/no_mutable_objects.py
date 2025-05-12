@@ -60,21 +60,25 @@ class NoMutableObjectsVisitor(ast.NodeVisitor):
                             frozen_found = True
                             break
                 elif isinstance(deco.func, ast.Attribute) and deco.func.attr == 'define':
-                    for keyword in deco.keywords:
-                        if keyword.arg == 'frozen' and keyword.value.value:
-                            frozen_found = True
-                            break
+                    frozen_found = self._frozen(deco.keywords)
                 elif isinstance(deco.func, ast.Name) and deco.func.id == 'define':
-                    for keyword in deco.keywords:
-                        if keyword.arg == 'frozen' and keyword.value.value:
-                            frozen_found = True
-                            break
+                    frozen_found = self._frozen(deco.keywords)
                 elif isinstance(deco.func, ast.Name) and deco.func.id == 'frozen':
                     frozen_found = True
                     break
+                elif isinstance(deco.func, ast.Attribute) and deco.func.attr == 'dataclass':
+                    frozen_found = self._frozen(deco.keywords)
+                elif isinstance(deco.func, ast.Name) and deco.func.id == 'dataclass':
+                    frozen_found = self._frozen(deco.keywords)
                 elif deco.func.value.id == 'attrs' and deco.func.attr == 'frozen':
                     frozen_found = True
                     break
         if not frozen_found:
             self.problems.append((node.lineno, node.col_offset, 'PEO200 class must be frozen'))
         self.generic_visit(node)
+
+    def _frozen(self, keywords: list[ast.keyword]) -> bool:
+        for keyword in keywords:
+            if keyword.arg == 'frozen' and keyword.value.value:
+                return True
+        return False
