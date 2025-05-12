@@ -66,7 +66,7 @@ class NoMutableObjectsVisitor(ast.NodeVisitor):
                 elif isinstance(deco.func, ast.Name) and deco.func.id == 'frozen':
                     frozen_found = True
                     break
-                elif isinstance(deco.func, ast.Attribute) and deco.func.attr == "dataclass":
+                elif isinstance(deco.func, ast.Attribute) and deco.func.attr == 'dataclass':
                     frozen_found = self._frozen(deco.keywords)
                 elif isinstance(deco.func, ast.Name) and deco.func.id == 'dataclass':
                     frozen_found = self._frozen(deco.keywords)
