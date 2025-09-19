@@ -31,6 +31,7 @@ from flake8.options.manager import OptionManager
 from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
 from pyeo.features.no_er_suffix import NoErSuffix
 from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
+from pyeo.features.no_public_attributes import NoPublicAttributesVisitor
 
 
 @final
@@ -45,7 +46,12 @@ class Plugin:
     def __init__(self, tree: ast.AST) -> None:
         """Ctor."""
         self._tree = tree
-        self._visitors = [CodeFreeCtorVisitor(self._options), NoMutableObjectsVisitor(self._options), NoErSuffix(self._options)]
+        self._visitors = [
+            CodeFreeCtorVisitor(self._options),
+            NoMutableObjectsVisitor(self._options),
+            NoErSuffix(self._options),
+            NoPublicAttributesVisitor(self._options),
+        ]
 
     @classmethod
     def add_options(cls, parser: OptionManager) -> None:
