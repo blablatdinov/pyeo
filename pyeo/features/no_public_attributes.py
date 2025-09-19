@@ -25,7 +25,7 @@
 import ast
 from typing import final
 
-from pyeo.utils.class_is_protocol import class_is_not_obj_factory
+from pyeo.utils.class_is_protocol import class_is_enum, class_is_exception, class_is_typeddict
 
 
 @final
@@ -42,14 +42,27 @@ class NoPublicAttributesVisitor(ast.NodeVisitor):
 
         :param node: ast.ClassDef
         """
-        # Проверяем все классы, включая протоколы
+        if self._should_skip_class(node):
+            self.generic_visit(node)
+            return
         for elem in node.body:
             if isinstance(elem, ast.Assign):
                 self._check_assign_attributes(elem)
             elif isinstance(elem, ast.AnnAssign):
                 self._check_ann_assign_attributes(elem)
-
         self.generic_visit(node)
+
+    def _should_skip_class(self, node: ast.ClassDef) -> bool:
+        """Check if class should be skipped from public attributes check.
+
+        :param node: ast.ClassDef
+        :return: True if class should be skipped
+        """
+        return any([
+            class_is_enum(node),
+            class_is_exception(node),
+            class_is_typeddict(node),
+        ])
 
     def _check_assign_attributes(self, node: ast.Assign) -> None:
         """Check assign attributes for public names.
