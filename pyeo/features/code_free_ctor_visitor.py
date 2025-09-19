@@ -47,8 +47,8 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
             elif self._is_classmethod(elem):
                 self._check_constructor_body(elem, 'PEO102 @classmethod should contain only cls() call')
         self.generic_visit(node)
+
     def _is_classmethod(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
-        """Проверяет, является ли метод classmethod."""
         for decorator in node.decorator_list:
             if isinstance(decorator, ast.Name) and decorator.id == 'classmethod':
                 return True
@@ -57,7 +57,6 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         return False
 
     def _check_constructor_body(self, node: ast.FunctionDef | ast.AsyncFunctionDef, error_message: str) -> None:
-        """Проверяет тело конструктора на наличие только операций присваивания."""
         for body_elem in node.body:
             if isinstance(body_elem, (ast.Assign, ast.AnnAssign)):
                 if node.name == '__init__' and not self._is_valid_assignment(body_elem, node):
@@ -80,7 +79,6 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
                 self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
 
     def _is_valid_cls_call(self, node: ast.Call, func_node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
-        """Проверяет, является ли вызов cls() валидным (все аргументы - константы или аргументы функции)."""
         if not isinstance(node.func, ast.Name) or node.func.id != 'cls':
             return False
         arg_names = {arg.arg for arg in func_node.args.args}
@@ -94,7 +92,6 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         return True
 
     def _is_valid_assignment(self, node: ast.Assign | ast.AnnAssign, func_node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
-        """Проверяет, является ли присваивание валидным (использует аргументы функции или константы)."""
         arg_names = {arg.arg for arg in func_node.args.args}
         if isinstance(node, ast.Assign):
             for target in node.targets:
