@@ -56,6 +56,7 @@ def test_ctor_docstring(plugin_run, options_factory):
             '',
             '    @classmethod',
             '    def secondary_ctor(cls, cost):',
+            '        """Ctor."""',
             '        return cls(cost)',
             '',
             '    def area(self) -> int:',
@@ -86,6 +87,48 @@ def test_ctor_typehint(plugin_run, options_factory):
     )
 
     assert not got
+
+
+def test_ctor_object_composition(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def __init__(self, cost):',
+            '        self._cost: int | None = None',
+            '',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost):',
+            '        return cls(PositiveInt(cost))',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())]
+    )
+
+    assert not got
+
+
+def test_call_function(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def __init__(self, cost):',
+            '        self._cost: int | None = None',
+            '',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost):',
+            '        return cls(validate(cost))',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())]
+    )
+
+    assert got
 
 
 def test_init_with_only_assignments(plugin_run, options_factory):
