@@ -45,7 +45,7 @@ class Plugin:
     def __init__(self, tree: ast.AST) -> None:
         """Ctor."""
         self._tree = tree
-        self._visitors = [CodeFreeCtorVisitor(self._options), CodeFreeCtorVisitor(self._options), NoMutableObjectsVisitor(self._options), NoErSuffix(self._options)]
+        self._visitors = [CodeFreeCtorVisitor(self._options), NoMutableObjectsVisitor(self._options), NoErSuffix(self._options)]
 
     @classmethod
     def add_options(cls, parser: OptionManager) -> None:

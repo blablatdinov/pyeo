@@ -39,13 +39,16 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
 
         :param node: ast.ClassDef
         """
+        print(node.name)
         for elem in node.body:
             if not isinstance(elem, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
             if elem.name == '__init__':
+                print('init found')
                 self._check_constructor_body(elem, 'PEO101 __init__ method should contain only assignments')
             elif self._is_classmethod(elem):
                 self._check_constructor_body(elem, 'PEO102 @classmethod should contain only cls() call')
+        print(self.problems)
         self.generic_visit(node)
 
     def _is_classmethod(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:

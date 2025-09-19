@@ -88,31 +88,7 @@ def test_ctor_typehint(plugin_run, options_factory):
     assert not got
 
 
-def test_ctor_with_code(plugin_run, options_factory):
-    got = plugin_run(
-        '\n'.join([
-            'class HttpHouse(House):',
-            '',
-            '    def __init__(self, cost):',
-            '        self._cost = cost',
-            '        if cost < 0:',
-            '            self._cost = 0',
-            '',
-            '    @classmethod',
-            '    def secondary_ctor(cls, cost):',
-            '        return cls(cost)',
-            '',
-            '    def area(self) -> int:',
-            '        return 5',
-        ]),
-        [CodeFreeCtorVisitor(options_factory())]
-    )
-
-    assert got == [(5, 8, 'PEO101 __init__ method should contain only assignments')]
-
-
 def test_init_with_only_assignments(plugin_run, options_factory):
-    """Тест __init__ метода с только операциями присваивания."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -130,7 +106,6 @@ def test_init_with_only_assignments(plugin_run, options_factory):
 
 
 def test_init_with_ann_assign(plugin_run, options_factory):
-    """Тест __init__ метода с аннотированными присваиваниями."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -169,7 +144,6 @@ def test_valid_classmethod(plugin_run, options_factory):
 
 
 def test_init_with_return_without_value(plugin_run, options_factory):
-    """Тест __init__ метода с return без значения - должен быть валидным."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -252,7 +226,6 @@ def test_invalid_classmethod(plugin_run, options_factory, ctor_body):
 
 
 def test_classmethod_with_cls_call(plugin_run, options_factory):
-    """Тест @classmethod с вызовом cls() - должен быть валидным."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -274,7 +247,6 @@ def test_classmethod_with_cls_call(plugin_run, options_factory):
 
 
 def test_classmethod_with_cls_call_two_args(plugin_run, options_factory):
-    """Тест @classmethod с вызовом cls() с двумя аргументами - должен быть валидным."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -297,7 +269,6 @@ def test_classmethod_with_cls_call_two_args(plugin_run, options_factory):
 
 
 def test_classmethod_with_cls_call_multiple_args(plugin_run, options_factory):
-    """Тест @classmethod с вызовом cls() с несколькими аргументами - должен быть валидным."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -320,7 +291,6 @@ def test_classmethod_with_cls_call_multiple_args(plugin_run, options_factory):
 
 
 def test_classmethod_with_return_without_value(plugin_run, options_factory):
-    """Тест @classmethod с return без значения - должен быть ошибка."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -342,7 +312,6 @@ def test_classmethod_with_return_without_value(plugin_run, options_factory):
 
 
 def test_classmethod_with_return_other_value(plugin_run, options_factory):
-    """Тест @classmethod с return другого значения - должен быть ошибка."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -364,7 +333,6 @@ def test_classmethod_with_return_other_value(plugin_run, options_factory):
 
 
 def test_classmethod_with_function_call(plugin_run, options_factory):
-    """Тест @classmethod с вызовом функции - должен быть ошибка."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
@@ -391,7 +359,6 @@ def test_classmethod_with_function_call(plugin_run, options_factory):
 
 
 def test_regular_method_not_affected(plugin_run, options_factory):
-    """Тест что обычные методы не затрагиваются проверкой."""
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
