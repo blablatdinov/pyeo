@@ -23,7 +23,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 # pyeo
 
+[![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
+
 [![wemake-python-styleguide](https://img.shields.io/badge/style-wemake-000000.svg)](https://github.com/wemake-services/wemake-python-styleguide)
+![](https://tokei.rs/b1/github/blablatdinov/pyeo)
+[![Hits-of-Code](https://hitsofcode.com/github/blablatdinov/pyeo?branch=main&label=Hits-of-Code)](https://hitsofcode.com/github/blablatdinov/pyeo/view?branch=main&label=Hits-of-Code)
 
 Pyeo is an advanced static analysis tool tailored specifically to enforce the
 principles advocated by Elegant Objects ([elegantobjects.org](https://elegantobjects.org)) in Python projects.
