@@ -40,6 +40,8 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         :param node: ast.ClassDef
         """
         for elem in node.body:
+            # if node.name != 'TgAnswerFork':
+            #     return
             if not isinstance(elem, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
             if elem.name == '__init__':
@@ -69,8 +71,11 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
                     else:
                         self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
                 else:
-                    if self._is_classmethod(node) and isinstance(body_elem.value, ast.Call) and self._is_valid_cls_call(body_elem.value, node):
-                        continue
+                    if self._is_classmethod(node) and isinstance(body_elem.value, ast.Call):
+                        if self._is_valid_cls_call(body_elem.value, node) or self._is_constructor_call(body_elem.value):
+                            continue
+                        else:
+                            self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
                     else:
                         self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
             elif isinstance(body_elem, ast.Expr) and isinstance(body_elem.value, ast.Constant) and isinstance(body_elem.value.value, str):
@@ -82,6 +87,10 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         if not isinstance(node.func, ast.Name) or node.func.id != 'cls':
             return False
         arg_names = {arg.arg for arg in func_node.args.args}
+        if func_node.args.vararg:
+            arg_names.add(func_node.args.vararg.arg)
+        if func_node.args.kwarg:
+            arg_names.add(func_node.args.kwarg.arg)
         for arg in node.args:
             if isinstance(arg, ast.Name) and arg.id in arg_names:
                 continue

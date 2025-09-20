@@ -49,18 +49,58 @@ def test_ctor_docstring(plugin_run, options_factory):
     got = plugin_run(
         '\n'.join([
             'class HttpHouse(House):',
-            '',
             '    def __init__(self, cost):',
             '        """Ctor."""',
             '        self._cost = cost',
-            '',
             '    @classmethod',
             '    def secondary_ctor(cls, cost):',
             '        """Ctor."""',
             '        return cls(cost)',
-            '',
-            '    def area(self) -> int:',
-            '        return 5',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())]
+    )
+
+    assert not got
+
+
+def test_return_decorated(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost):',
+            '        """Ctor."""',
+            '        return Residential(cls(cost))',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())]
+    )
+
+    assert not got
+
+
+def test_iterable_param(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost, *places):',
+            '        """Ctor."""',
+            '        return cls(cost, places)',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())]
+    )
+
+    assert not got
+
+
+def test_param_after_args(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost, *places, debug_mode):',
+            '        """Ctor."""',
+            '        return cls(cost, places, debug_mode)',
         ]),
         [CodeFreeCtorVisitor(options_factory())]
     )
@@ -248,6 +288,9 @@ def test_invalid_init(plugin_run, options_factory, ctor_body):
     ]),
     '\n'.join([
         '        return cls(cost, [0])',
+    ]),
+    '\n'.join([
+        '        return cls(cost + 10)',
     ]),
 ])
 def test_invalid_classmethod(plugin_run, options_factory, ctor_body):
