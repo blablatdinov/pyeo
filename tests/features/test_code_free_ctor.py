@@ -108,6 +108,26 @@ def test_param_after_args(plugin_run, options_factory):
     assert not got
 
 
+@pytest.mark.parametrize('base', [
+    'enum.Enum',
+    # TODO: add other
+])
+def test_enum(plugin_run, options_factory, base):
+    got = plugin_run(
+        '\n'.join([
+            'class Names({0}):'.format(base),
+            '    bob = ("bob", 1)',
+            '    alice = ("alice", 1)',
+            '    @classmethod',
+            '    def names(cls):',
+            '       return tuple(field.name for field in cls)',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())]
+    )
+
+    assert not got
+
+
 def test_ctor_typehint(plugin_run, options_factory):
     got = plugin_run(
         '\n'.join([
