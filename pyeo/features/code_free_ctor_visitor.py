@@ -39,6 +39,9 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
 
         :param node: ast.ClassDef
         """
+        if self._is_enum_class(node):
+            self.generic_visit(node)
+            return
         for elem in node.body:
             if not isinstance(elem, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
@@ -47,6 +50,17 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
             elif self._is_classmethod(elem):
                 self._check_constructor_body(elem, 'PEO102 @classmethod should contain only cls() call')
         self.generic_visit(node)
+
+    def _is_enum_class(self, node: ast.ClassDef) -> bool:
+        """Проверяет, является ли класс enum'ом."""
+        for base in node.bases:
+            if isinstance(base, ast.Name):
+                if base.id == 'Enum':
+                    return True
+            elif isinstance(base, ast.Attribute):
+                if base.attr == 'Enum':
+                    return True
+        return False
 
     def _is_classmethod(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
         for decorator in node.decorator_list:
@@ -69,8 +83,11 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
                     else:
                         self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
                 else:
-                    if self._is_classmethod(node) and isinstance(body_elem.value, ast.Call) and self._is_valid_cls_call(body_elem.value, node):
-                        continue
+                    if self._is_classmethod(node) and isinstance(body_elem.value, ast.Call):
+                        if self._is_valid_cls_call(body_elem.value, node) or self._is_constructor_call(body_elem.value):
+                            continue
+                        else:
+                            self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
                     else:
                         self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
             elif isinstance(body_elem, ast.Expr) and isinstance(body_elem.value, ast.Constant) and isinstance(body_elem.value.value, str):
@@ -82,6 +99,13 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         if not isinstance(node.func, ast.Name) or node.func.id != 'cls':
             return False
         arg_names = {arg.arg for arg in func_node.args.args}
+        if func_node.args.vararg:
+            arg_names.add(func_node.args.vararg.arg)
+        if func_node.args.kwarg:
+            arg_names.add(func_node.args.kwarg.arg)
+        if func_node.args.kwonlyargs:
+            for kwarg in func_node.args.kwonlyargs:
+                arg_names.add(kwarg.arg)
         for arg in node.args:
             if isinstance(arg, ast.Name) and arg.id in arg_names:
                 continue
