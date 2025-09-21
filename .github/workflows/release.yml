@@ -76,4 +76,4 @@ jobs:
           delete-branch: true
           title: 'Up version in pyproject.toml'
           assignees: blablatdinov
-          base: master
+          base: main
