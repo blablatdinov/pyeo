@@ -22,6 +22,7 @@
 
 """ForbiddenDecoratorVisitor."""
 
+import argparse
 import ast
 from typing import final
 
@@ -30,7 +31,7 @@ from typing import final
 class ForbiddenDecoratorVisitor(ast.NodeVisitor):
     """ForbiddenDecoratorVisitor."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: argparse.Namespace) -> None:
         """Ctor."""
         self.problems: list[tuple[int, int, str]] = []
 
@@ -40,6 +41,6 @@ class ForbiddenDecoratorVisitor(ast.NodeVisitor):
         :param node: ast.ClassDef
         """
         for deco in node.decorator_list:
-            if deco.id == 'staticmethod':
+            if isinstance(deco, ast.Name) and deco.id == 'staticmethod':
                 self.problems.append((node.lineno, node.col_offset, 'PEO400 Staticmethod is forbidden'))
         self.generic_visit(node)

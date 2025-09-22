@@ -22,6 +22,7 @@
 
 # flake8: noqa: WPS232
 
+import argparse
 import ast
 from collections.abc import Generator
 from typing import final
@@ -34,21 +35,24 @@ from pyeo.features.no_getter_methods import NoGetterMethodsVisitor
 from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
 from pyeo.features.no_property_decorator import NoPropertyDecoratorVisitor
 from pyeo.features.no_public_attributes import NoPublicAttributesVisitor
+from pyeo.visitor_protocol import VisitorWithProblems
 
 
 @final
 class Plugin:
     """Flake8 plugin."""
 
+    _options: argparse.Namespace
+
     @classmethod
-    def parse_options(cls, options) -> None:
-        """Parses registered options for providing them to each visitor."""
+    def parse_options(cls, options: argparse.Namespace) -> None:
+        """Parse registered options for providing them to each visitor."""
         cls._options = options
 
     def __init__(self, tree: ast.AST) -> None:
         """Ctor."""
         self._tree = tree
-        self._visitors = [
+        self._visitors: list[VisitorWithProblems] = [
             CodeFreeCtorVisitor(self._options),
             NoMutableObjectsVisitor(self._options),
             NoErSuffix(self._options),
@@ -59,6 +63,7 @@ class Plugin:
 
     @classmethod
     def add_options(cls, parser: OptionManager) -> None:
+        """Add command line options to the parser."""
         parser.add_option(
             long_option_name='--available-er-names',
             default=[],

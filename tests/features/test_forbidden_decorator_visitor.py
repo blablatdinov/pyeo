@@ -31,7 +31,7 @@ def test_valid(plugin_run, options_factory):
             '    def double_cost(self):',
             '        return self.cost * 2',
         ]),
-        [ForbiddenDecoratorVisitor(options_factory())]
+        [ForbiddenDecoratorVisitor(options_factory())],
     )
 
     assert not got
@@ -46,7 +46,7 @@ def test_staticmethod(plugin_run, options_factory):
             '    def double_cost(cost):',
             '        return cost * 2',
         ]),
-        [ForbiddenDecoratorVisitor(options_factory())]
+        [ForbiddenDecoratorVisitor(options_factory())],
     )
 
     assert got == [(4, 4, 'PEO400 Staticmethod is forbidden')]

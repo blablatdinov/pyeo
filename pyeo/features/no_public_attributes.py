@@ -22,6 +22,7 @@
 
 """NoPublicAttributesVisitor."""
 
+import argparse
 import ast
 from typing import final
 
@@ -32,7 +33,7 @@ from pyeo.utils.class_is_protocol import class_is_enum, class_is_exception, clas
 class NoPublicAttributesVisitor(ast.NodeVisitor):
     """NoPublicAttributesVisitor."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: argparse.Namespace) -> None:
         """Ctor."""
         self._options = options
         self.problems: list[tuple[int, int, str]] = []
@@ -75,7 +76,7 @@ class NoPublicAttributesVisitor(ast.NodeVisitor):
                     self.problems.append((
                         node.lineno,
                         node.col_offset,
-                        f'PEO300 class attribute "{target.id}" should be private'
+                        f'PEO300 class attribute "{target.id}" should be private',
                     ))
 
     def _check_ann_assign_attributes(self, node: ast.AnnAssign) -> None:
@@ -88,5 +89,5 @@ class NoPublicAttributesVisitor(ast.NodeVisitor):
                 self.problems.append((
                     node.lineno,
                     node.col_offset,
-                    f'PEO300 class attribute "{node.target.id}" should be private'
+                    f'PEO300 class attribute "{node.target.id}" should be private',
                 ))

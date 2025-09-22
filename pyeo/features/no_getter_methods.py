@@ -22,6 +22,7 @@
 
 """NoGetterMethodsVisitor."""
 
+import argparse
 import ast
 from typing import final
 
@@ -30,7 +31,7 @@ from typing import final
 class NoGetterMethodsVisitor(ast.NodeVisitor):
     """Visitor that forbids methods that return object attributes (getter methods)."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: argparse.Namespace) -> None:
         """Ctor."""
         self.problems: list[tuple[int, int, str]] = []
 
@@ -49,14 +50,14 @@ class NoGetterMethodsVisitor(ast.NodeVisitor):
             self.problems.append((
                 node.lineno,
                 node.col_offset,
-                f'PEO601 Method "{node.name}" starts with "get" and should be avoided'
+                f'PEO601 Method "{node.name}" starts with "get" and should be avoided',
             ))
         # Only check for simple getters if method name doesn't start with "get"
         elif len(node.args.args) == 1 and self._is_simple_getter(node):
             self.problems.append((
                 node.lineno,
                 node.col_offset,
-                f'PEO602 Method "{node.name}" is a getter and should be avoided'
+                f'PEO602 Method "{node.name}" is a getter and should be avoided',
             ))
 
         self.generic_visit(node)
@@ -68,7 +69,7 @@ class NoGetterMethodsVisitor(ast.NodeVisitor):
         :return: True if function is a method
         """
         return (
-            node.args.args and
+            len(node.args.args) > 0 and
             isinstance(node.args.args[0], ast.arg) and
             node.args.args[0].arg == 'self'
         )
@@ -91,11 +92,11 @@ class NoGetterMethodsVisitor(ast.NodeVisitor):
             return False
 
         stmt = node.body[0]
-        
+
         # Check for simple return statement
         if isinstance(stmt, ast.Return):
             return self._is_attribute_access(stmt.value)
-        
+
         # Check for return statement in if/else blocks
         if isinstance(stmt, ast.If):
             return (

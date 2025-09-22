@@ -21,6 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import pytest
+
 from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
 
 
@@ -39,7 +40,7 @@ def test(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -57,7 +58,7 @@ def test_ctor_docstring(plugin_run, options_factory):
             '        """Ctor."""',
             '        return cls(cost)',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -72,7 +73,7 @@ def test_return_decorated(plugin_run, options_factory):
             '        """Ctor."""',
             '        return Residential(cls(cost))',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -87,7 +88,7 @@ def test_iterable_param(plugin_run, options_factory):
             '        """Ctor."""',
             '        return cls(cost, places)',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -102,7 +103,7 @@ def test_param_after_args(plugin_run, options_factory):
             '        """Ctor."""',
             '        return cls(cost, places, debug_mode)',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -122,7 +123,7 @@ def test_enum(plugin_run, options_factory, base):
             '    def names(cls):',
             '       return tuple(field.name for field in cls)',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -143,7 +144,7 @@ def test_ctor_typehint(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -164,7 +165,7 @@ def test_ctor_object_composition(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -185,7 +186,7 @@ def test_call_function(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert got
@@ -202,7 +203,7 @@ def test_init_with_only_assignments(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -219,7 +220,7 @@ def test_init_with_ann_assign(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -240,7 +241,7 @@ def test_valid_classmethod(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -258,7 +259,7 @@ def test_init_with_return_without_value(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -272,6 +273,9 @@ def test_init_with_return_without_value(plugin_run, options_factory):
     ]),
     '\n'.join([
         '        self._cost = [0]',
+    ]),
+    '\n'.join([
+        '        self._cost = cost.upper()',
     ]),
     '\n'.join([
         '        print("Creating house")',
@@ -288,7 +292,7 @@ def test_invalid_init(plugin_run, options_factory, ctor_body):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     # Проверяем, что есть ошибка с правильным сообщением, независимо от номера строки
@@ -325,7 +329,7 @@ def test_invalid_classmethod(plugin_run, options_factory, ctor_body):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert got == [(5, 8, 'PEO102 @classmethod should contain only cls() call')]
@@ -346,7 +350,7 @@ def test_classmethod_with_cls_call(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -368,7 +372,7 @@ def test_classmethod_with_cls_call_two_args(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -390,7 +394,7 @@ def test_classmethod_with_cls_call_multiple_args(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
@@ -411,7 +415,7 @@ def test_classmethod_with_return_without_value(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert got == [(8, 8, 'PEO102 @classmethod should contain only cls() call')]
@@ -432,7 +436,7 @@ def test_classmethod_with_return_other_value(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert got == [(8, 8, 'PEO102 @classmethod should contain only cls() call')]
@@ -455,7 +459,7 @@ def test_classmethod_with_function_call(plugin_run, options_factory):
             '    def area(self) -> int:',
             '        return 5',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert got == [
@@ -481,7 +485,7 @@ def test_regular_method_not_affected(plugin_run, options_factory):
             '        result = self._cost * 2',
             '        return result',
         ]),
-        [CodeFreeCtorVisitor(options_factory())]
+        [CodeFreeCtorVisitor(options_factory())],
     )
 
     assert not got
