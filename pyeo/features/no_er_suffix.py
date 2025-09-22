@@ -25,8 +25,6 @@
 import ast
 from typing import final
 
-from pyeo.utils.class_is_protocol import class_is_protocol
-
 
 @final
 class NoErSuffix(ast.NodeVisitor):

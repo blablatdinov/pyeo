@@ -44,6 +44,6 @@ class NoPropertyDecoratorVisitor(ast.NodeVisitor):
                 self.problems.append((
                     node.lineno,
                     node.col_offset,
-                    'PEO500 @property decorator is forbidden'
+                    'PEO500 @property decorator is forbidden',
                 ))
         self.generic_visit(node)

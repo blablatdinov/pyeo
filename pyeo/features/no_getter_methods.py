@@ -49,14 +49,14 @@ class NoGetterMethodsVisitor(ast.NodeVisitor):
             self.problems.append((
                 node.lineno,
                 node.col_offset,
-                f'PEO601 Method "{node.name}" starts with "get" and should be avoided'
+                f'PEO601 Method "{node.name}" starts with "get" and should be avoided',
             ))
         # Only check for simple getters if method name doesn't start with "get"
         elif len(node.args.args) == 1 and self._is_simple_getter(node):
             self.problems.append((
                 node.lineno,
                 node.col_offset,
-                f'PEO602 Method "{node.name}" is a getter and should be avoided'
+                f'PEO602 Method "{node.name}" is a getter and should be avoided',
             ))
 
         self.generic_visit(node)
@@ -91,11 +91,11 @@ class NoGetterMethodsVisitor(ast.NodeVisitor):
             return False
 
         stmt = node.body[0]
-        
+
         # Check for simple return statement
         if isinstance(stmt, ast.Return):
             return self._is_attribute_access(stmt.value)
-        
+
         # Check for return statement in if/else blocks
         if isinstance(stmt, ast.If):
             return (
