@@ -42,7 +42,7 @@ class Plugin:
 
     @classmethod
     def parse_options(cls, options) -> None:
-        """Parses registered options for providing them to each visitor."""
+        """Parse registered options for providing them to each visitor."""
         cls._options = options
 
     def __init__(self, tree: ast.AST) -> None:
@@ -59,6 +59,7 @@ class Plugin:
 
     @classmethod
     def add_options(cls, parser: OptionManager) -> None:
+        """Add command line options to the parser."""
         parser.add_option(
             long_option_name='--available-er-names',
             default=[],

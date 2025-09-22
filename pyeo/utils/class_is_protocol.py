@@ -24,6 +24,7 @@ import ast
 
 
 def class_is_protocol(node: ast.ClassDef) -> bool:
+    """Check if a class is a Protocol."""
     for base in node.bases:
         if isinstance(base, ast.Subscript):
             if isinstance(base.value, ast.Name) and base.value.id == 'Protocol':
@@ -41,6 +42,7 @@ def class_is_protocol(node: ast.ClassDef) -> bool:
 
 
 def class_is_typeddict(node: ast.ClassDef) -> bool:
+    """Check if a class is a TypedDict."""
     for base in node.bases:
         if isinstance(base, ast.Subscript):
             if isinstance(base.value, ast.Name) and base.value.id == 'TypedDict':
@@ -58,6 +60,7 @@ def class_is_typeddict(node: ast.ClassDef) -> bool:
 
 
 def class_is_enum(node: ast.ClassDef) -> bool:
+    """Check if a class is an Enum."""
     for base in node.bases:
         if isinstance(base, ast.Subscript):
             if isinstance(base.value, ast.Name) and base.value.id.endswith('Enum'):
@@ -75,6 +78,7 @@ def class_is_enum(node: ast.ClassDef) -> bool:
 
 
 def class_is_exception(node: ast.ClassDef) -> bool:
+    """Check if a class is an Exception."""
     exception_name = lambda name: name.endswith('Exception') or name.endswith('Error')
     for base in node.bases:
         if isinstance(base, ast.Subscript):
@@ -93,6 +97,7 @@ def class_is_exception(node: ast.ClassDef) -> bool:
 
 
 def class_is_not_obj_factory(node: ast.ClassDef) -> bool:
+    """Check if a class is not an object factory (Protocol, Enum, Exception, or TypedDict)."""
     return any([
         class_is_protocol(node),
         class_is_enum(node),
