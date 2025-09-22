@@ -22,6 +22,7 @@
 
 """NoGetterMethodsVisitor."""
 
+import argparse
 import ast
 from typing import final
 
@@ -30,7 +31,7 @@ from typing import final
 class NoGetterMethodsVisitor(ast.NodeVisitor):
     """Visitor that forbids methods that return object attributes (getter methods)."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: argparse.Namespace) -> None:
         """Ctor."""
         self.problems: list[tuple[int, int, str]] = []
 

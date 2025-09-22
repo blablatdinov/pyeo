@@ -22,6 +22,7 @@
 
 """NoPropertyDecoratorVisitor."""
 
+import argparse
 import ast
 from typing import final
 
@@ -30,7 +31,7 @@ from typing import final
 class NoPropertyDecoratorVisitor(ast.NodeVisitor):
     """Visitor that forbids the use of @property decorator."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: argparse.Namespace) -> None:
         """Ctor."""
         self.problems: list[tuple[int, int, str]] = []
 

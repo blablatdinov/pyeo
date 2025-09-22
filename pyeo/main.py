@@ -22,6 +22,7 @@
 
 # flake8: noqa: WPS232
 
+import argparse
 import ast
 from collections.abc import Generator
 from typing import final
@@ -41,7 +42,7 @@ class Plugin:
     """Flake8 plugin."""
 
     @classmethod
-    def parse_options(cls, options) -> None:
+    def parse_options(cls, options: argparse.Namespace) -> None:
         """Parse registered options for providing them to each visitor."""
         cls._options = options
 

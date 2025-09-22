@@ -22,6 +22,7 @@
 
 """NoMutableObjectsVisitor."""
 
+import argparse
 import ast
 from typing import final
 
@@ -32,7 +33,7 @@ from pyeo.utils.class_is_protocol import class_is_not_obj_factory
 class NoMutableObjectsVisitor(ast.NodeVisitor):
     """NoMutableObjectsVisitor."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: argparse.Namespace) -> None:
         """Ctor."""
         self._options = options
         self.problems: list[tuple[int, int, str]] = []

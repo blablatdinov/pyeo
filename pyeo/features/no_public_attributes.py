@@ -22,6 +22,7 @@
 
 """NoPublicAttributesVisitor."""
 
+import argparse
 import ast
 from typing import final
 
@@ -32,7 +33,7 @@ from pyeo.utils.class_is_protocol import class_is_enum, class_is_exception, clas
 class NoPublicAttributesVisitor(ast.NodeVisitor):
     """NoPublicAttributesVisitor."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: argparse.Namespace) -> None:
         """Ctor."""
         self._options = options
         self.problems: list[tuple[int, int, str]] = []

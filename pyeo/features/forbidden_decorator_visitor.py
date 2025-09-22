@@ -22,6 +22,7 @@
 
 """ForbiddenDecoratorVisitor."""
 
+import argparse
 import ast
 from typing import final
 
@@ -30,7 +31,7 @@ from typing import final
 class ForbiddenDecoratorVisitor(ast.NodeVisitor):
     """ForbiddenDecoratorVisitor."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: argparse.Namespace) -> None:
         """Ctor."""
         self.problems: list[tuple[int, int, str]] = []
 

@@ -22,6 +22,7 @@
 
 """NoErSuffix."""
 
+import argparse
 import ast
 from typing import final
 
@@ -30,7 +31,7 @@ from typing import final
 class NoErSuffix(ast.NodeVisitor):
     """NoErSuffix."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: argparse.Namespace) -> None:
         """Ctor."""
         self._options = options
         self.problems: list[tuple[int, int, str]] = []
