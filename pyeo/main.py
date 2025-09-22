@@ -35,11 +35,14 @@ from pyeo.features.no_getter_methods import NoGetterMethodsVisitor
 from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
 from pyeo.features.no_property_decorator import NoPropertyDecoratorVisitor
 from pyeo.features.no_public_attributes import NoPublicAttributesVisitor
+from pyeo.visitor_protocol import VisitorWithProblems
 
 
 @final
 class Plugin:
     """Flake8 plugin."""
+    
+    _options: argparse.Namespace
 
     @classmethod
     def parse_options(cls, options: argparse.Namespace) -> None:
@@ -49,7 +52,7 @@ class Plugin:
     def __init__(self, tree: ast.AST) -> None:
         """Ctor."""
         self._tree = tree
-        self._visitors = [
+        self._visitors: list[VisitorWithProblems] = [
             CodeFreeCtorVisitor(self._options),
             NoMutableObjectsVisitor(self._options),
             NoErSuffix(self._options),

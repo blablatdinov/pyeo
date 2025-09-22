@@ -69,7 +69,7 @@ class NoGetterMethodsVisitor(ast.NodeVisitor):
         :return: True if function is a method
         """
         return (
-            node.args.args and
+            len(node.args.args) > 0 and
             isinstance(node.args.args[0], ast.arg) and
             node.args.args[0].arg == 'self'
         )

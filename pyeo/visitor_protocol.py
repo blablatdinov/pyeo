@@ -20,27 +20,16 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# flake8: noqa: WPS232
+"""Protocol for visitors with problems attribute."""
 
 import ast
-from collections.abc import Generator
-from typing import List, final
-
-from pyeo.visitor_protocol import VisitorWithProblems
+from typing import Protocol
 
 
-@final
-class FkPlugin:
-    """Fake flake8 plugin."""
+class VisitorWithProblems(Protocol):
+    """Protocol for visitors with problems attribute."""
 
-    def __init__(self, tree: ast.AST, visitors: List[VisitorWithProblems]) -> None:
-        """Ctor."""
-        self._tree = tree
-        self._visitors = visitors
+    problems: list[tuple[int, int, str]]
 
-    def run(self) -> Generator[tuple[int, int, str, type], None, None]:
-        """Entry."""
-        for visitor in self._visitors:
-            visitor.visit(self._tree)
-            for line in visitor.problems:  # noqa: WPS526
-                yield (line[0], line[1], line[2], type(self))
+    def visit(self, node: ast.AST) -> None:
+        """Visit AST node."""

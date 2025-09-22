@@ -36,7 +36,7 @@ def class_is_protocol(node: ast.ClassDef) -> bool:
             continue
         if isinstance(base, ast.Name) and base.id == 'Protocol':
             return True
-        if base.attr == 'Protocol':
+        if isinstance(base, ast.Attribute) and base.attr == 'Protocol':
             return True
     return False
 
@@ -54,7 +54,7 @@ def class_is_typeddict(node: ast.ClassDef) -> bool:
             continue
         if isinstance(base, ast.Name) and base.id == 'TypedDict':
             return True
-        if base.attr == 'TypedDict':
+        if isinstance(base, ast.Attribute) and base.attr == 'TypedDict':
             return True
     return False
 
@@ -72,7 +72,7 @@ def class_is_enum(node: ast.ClassDef) -> bool:
             continue
         if isinstance(base, ast.Name) and base.id.endswith('Enum'):
             return True
-        if base.attr.endswith('Enum'):
+        if isinstance(base, ast.Attribute) and base.attr.endswith('Enum'):
             return True
     return False
 
@@ -91,7 +91,7 @@ def class_is_exception(node: ast.ClassDef) -> bool:
             continue
         if isinstance(base, ast.Name) and exception_name(base.id):
             return True
-        if exception_name(base.attr):
+        if isinstance(base, ast.Attribute) and exception_name(base.attr):
             return True
     return False
 

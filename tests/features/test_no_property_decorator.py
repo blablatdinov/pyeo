@@ -22,6 +22,7 @@
 
 """Tests for NoPropertyDecoratorVisitor."""
 
+import argparse
 import ast
 
 from pyeo.features.no_property_decorator import NoPropertyDecoratorVisitor
@@ -36,7 +37,7 @@ def test_no_property_decorator_allowed() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoPropertyDecoratorVisitor({})
+    visitor = NoPropertyDecoratorVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 0
 
@@ -51,7 +52,7 @@ def test_property_decorator_forbidden() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoPropertyDecoratorVisitor({})
+    visitor = NoPropertyDecoratorVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO500 @property decorator is forbidden'
@@ -70,7 +71,7 @@ def test_multiple_property_decorators() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoPropertyDecoratorVisitor({})
+    visitor = NoPropertyDecoratorVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 2
     assert all(problem[2] == 'PEO500 @property decorator is forbidden' for problem in visitor.problems)
@@ -89,7 +90,7 @@ def test_other_decorators_allowed() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoPropertyDecoratorVisitor({})
+    visitor = NoPropertyDecoratorVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 0
 
@@ -105,7 +106,7 @@ def test_property_with_other_decorators() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoPropertyDecoratorVisitor({})
+    visitor = NoPropertyDecoratorVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO500 @property decorator is forbidden'

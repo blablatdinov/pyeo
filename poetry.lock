@@ -1138,6 +1138,33 @@ shellingham = ">=1.3.0"
 typing-extensions = ">=3.7.4.3"
 
 [[package]]
+name = "types-flake8"
+version = "7.3.0.20250622"
+description = "Typing stubs for flake8"
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+files = [
+    {file = "types_flake8-7.3.0.20250622-py3-none-any.whl", hash = "sha256:6d5a10d3578ec78045a99b599cf91dbffc2eca7a3820df1bfc7cd959e81d4253"},
+    {file = "types_flake8-7.3.0.20250622.tar.gz", hash = "sha256:caf6d06f2e5c40495947db230f127b85b57ada61d299c6ce043cc6d68eb2c749"},
+]
+
+[package.dependencies]
+types-pyflakes = "*"
+
+[[package]]
+name = "types-pyflakes"
+version = "3.4.0.20250701"
+description = "Typing stubs for pyflakes"
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+files = [
+    {file = "types_pyflakes-3.4.0.20250701-py3-none-any.whl", hash = "sha256:c8ebd5fb96b54782ecf45c0624fe4ec56447d044d0c6fc84958d296a75823e24"},
+    {file = "types_pyflakes-3.4.0.20250701.tar.gz", hash = "sha256:84968d6cdbae4ccfc32a3e0153a878a7b192cc14ce0a8ce084a04cadb23f0498"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.12.2"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -1186,4 +1213,4 @@ typing_extensions = ">=4.0,<5.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "7e2fdb74de2da3ea9bf4f551ed22b686de225ef5d58c4a024a0249b3f7a0883e"
+content-hash = "137bd99d691c6d11c1a99b2fc4cb6229d77975037a9cc7c213e8ac38ad017eb7"

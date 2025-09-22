@@ -22,6 +22,7 @@
 
 """Tests for NoGetterMethodsVisitor."""
 
+import argparse
 import ast
 
 from pyeo.features.no_getter_methods import NoGetterMethodsVisitor
@@ -36,7 +37,7 @@ def test_simple_getter_forbidden() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "get_value" starts with "get" and should be avoided'
@@ -51,7 +52,7 @@ def test_chained_attribute_getter_forbidden() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "get_nested_value" starts with "get" and should be avoided'
@@ -68,7 +69,7 @@ def test_getter_with_conditional_forbidden_by_name() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "get_value" starts with "get" and should be avoided'
@@ -83,7 +84,7 @@ def test_method_with_parameters_forbidden_by_name() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "get_value" starts with "get" and should be avoided'
@@ -97,7 +98,7 @@ def test_non_method_function_allowed() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 0
 
@@ -114,7 +115,7 @@ def test_method_with_complex_logic_forbidden_by_name() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "get_value" starts with "get" and should be avoided'
@@ -129,7 +130,7 @@ def test_method_returning_none_forbidden_by_name() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "get_value" starts with "get" and should be avoided'
@@ -144,7 +145,7 @@ def test_method_returning_literal_forbidden_by_name() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "get_value" starts with "get" and should be avoided'
@@ -161,7 +162,7 @@ def test_multiple_getters_detected() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 2
     assert visitor.problems[0][2] == 'PEO601 Method "get_value1" starts with "get" and should be avoided'
@@ -177,7 +178,7 @@ def test_get_method_forbidden() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "get" starts with "get" and should be avoided'
@@ -192,7 +193,7 @@ def test_getter_method_forbidden() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "getter" starts with "get" and should be avoided'
@@ -207,7 +208,7 @@ def test_getting_method_forbidden() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO601 Method "getting" starts with "get" and should be avoided'
@@ -226,7 +227,7 @@ def test_methods_not_starting_with_get_but_simple_getters_forbidden() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 3
     assert visitor.problems[0][2] == 'PEO602 Method "value" is a getter and should be avoided'
@@ -252,7 +253,7 @@ def test_methods_with_complex_logic_allowed() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 0
 
@@ -266,7 +267,7 @@ def test_simple_getter_by_behavior_forbidden() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO602 Method "value" is a getter and should be avoided'
@@ -281,7 +282,7 @@ def test_simple_getter_with_chained_attributes_forbidden() -> None:
     ])
 
     tree = ast.parse(code)
-    visitor = NoGetterMethodsVisitor({})
+    visitor = NoGetterMethodsVisitor(argparse.Namespace())
     visitor.visit(tree)
     assert len(visitor.problems) == 1
     assert visitor.problems[0][2] == 'PEO602 Method "nested_value" is a getter and should be avoided'

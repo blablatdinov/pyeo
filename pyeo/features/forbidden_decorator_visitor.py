@@ -41,6 +41,6 @@ class ForbiddenDecoratorVisitor(ast.NodeVisitor):
         :param node: ast.ClassDef
         """
         for deco in node.decorator_list:
-            if deco.id == 'staticmethod':
+            if isinstance(deco, ast.Name) and deco.id == 'staticmethod':
                 self.problems.append((node.lineno, node.col_offset, 'PEO400 Staticmethod is forbidden'))
         self.generic_visit(node)
