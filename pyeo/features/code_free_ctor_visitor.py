@@ -53,21 +53,20 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def _is_enum_class(self, node: ast.ClassDef) -> bool:
-        """Проверяет, является ли класс enum'ом."""
         for base in node.bases:
-            if isinstance(base, ast.Name):
-                if base.id == 'Enum':
-                    return True
-            elif isinstance(base, ast.Attribute):
-                if base.attr == 'Enum':
-                    return True
+            if (
+                (isinstance(base, ast.Name) and base.id.endswith('Enum'))
+                or (isinstance(base, ast.Attribute) and base.attr.endswith('Enum'))
+            ):
+                return True
         return False
 
     def _is_classmethod(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
         for decorator in node.decorator_list:
-            if isinstance(decorator, ast.Name) and decorator.id == 'classmethod':
-                return True
-            elif isinstance(decorator, ast.Attribute) and decorator.attr == 'classmethod':
+            if (
+                (isinstance(decorator, ast.Name) and decorator.id == 'classmethod')
+                or (isinstance(decorator, ast.Attribute) and decorator.attr == 'classmethod')
+            ):
                 return True
         return False
 
@@ -91,7 +90,11 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
                             self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
                     else:
                         self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
-            elif isinstance(body_elem, ast.Expr) and isinstance(body_elem.value, ast.Constant) and isinstance(body_elem.value.value, str):
+            elif (
+                isinstance(body_elem, ast.Expr)
+                and isinstance(body_elem.value, ast.Constant)
+                and isinstance(body_elem.value.value, str)
+            ):
                 continue
             else:
                 self.problems.append((body_elem.lineno, body_elem.col_offset, error_message))
@@ -128,21 +131,29 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
             return node.func.attr[0].isupper() if node.func.attr else False
         return False
 
-    def _is_valid_assignment(self, node: ast.Assign | ast.AnnAssign, func_node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
+    def _is_valid_assignment(
+        self,
+        node: ast.Assign | ast.AnnAssign,
+        func_node: ast.FunctionDef | ast.AsyncFunctionDef,
+    ) -> bool:
         arg_names = {arg.arg for arg in func_node.args.args}
         if isinstance(node, ast.Assign):
             for target in node.targets:
-                if isinstance(target, ast.Attribute):
-                    if isinstance(node.value, ast.Name) and node.value.id in arg_names:
-                        return True
-                    elif isinstance(node.value, ast.Constant):
-                        return True
+                if (
+                    (
+                        isinstance(target, ast.Attribute)
+                        and (isinstance(node.value, ast.Name) and node.value.id in arg_names)
+                    )
+                    or isinstance(node.value, ast.Constant)
+                ):
+                    return True
             return False
         elif isinstance(node, ast.AnnAssign):
-            if isinstance(node.target, ast.Attribute):
-                if isinstance(node.value, ast.Name) and node.value.id in arg_names:
-                    return True
-                elif isinstance(node.value, ast.Constant):
-                    return True
-            return False
+            return (
+                (
+                    isinstance(node.target, ast.Attribute)
+                    and (isinstance(node.value, ast.Name) and node.value.id in arg_names)
+                )
+                or isinstance(node.value, ast.Constant)
+            )
         return False

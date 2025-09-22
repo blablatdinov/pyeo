@@ -51,11 +51,21 @@ class NoMutableObjectsVisitor(ast.NodeVisitor):
             if isinstance(deco, ast.Name) and deco.id == 'frozen':
                 frozen_found = True
                 break
-            elif isinstance(deco, ast.Attribute) and deco.attr == 'frozen' and isinstance(deco.value, ast.Name) and deco.value.id == 'attrs':
+            elif (
+                isinstance(deco, ast.Attribute)
+                and deco.attr == 'frozen'
+                and isinstance(deco.value, ast.Name)
+                and deco.value.id == 'attrs'
+            ):
                 frozen_found = True
                 break
             elif isinstance(deco, ast.Call):
-                if isinstance(deco.func, ast.Attribute) and hasattr(deco.func, 'id') and isinstance(deco.func, ast.Name) and deco.func.id == 'define':
+                if (
+                    isinstance(deco.func, ast.Attribute)
+                    and hasattr(deco.func, 'id')
+                    and isinstance(deco.func, ast.Name)
+                    and deco.func.id == 'define'
+                ):
                     for keyword in deco.keywords:
                         if keyword.arg == 'frozen' and isinstance(keyword.value, ast.Constant) and keyword.value.value:
                             frozen_found = True
@@ -71,7 +81,12 @@ class NoMutableObjectsVisitor(ast.NodeVisitor):
                     frozen_found = self._frozen(deco.keywords)
                 elif isinstance(deco.func, ast.Name) and deco.func.id == 'dataclass':
                     frozen_found = self._frozen(deco.keywords)
-                elif isinstance(deco.func, ast.Attribute) and isinstance(deco.func.value, ast.Name) and deco.func.value.id == 'attrs' and deco.func.attr == 'frozen':
+                elif (
+                    isinstance(deco.func, ast.Attribute)
+                    and isinstance(deco.func.value, ast.Name)
+                    and deco.func.value.id == 'attrs'
+                    and deco.func.attr == 'frozen'
+                ):
                     frozen_found = True
                     break
         if not frozen_found:
