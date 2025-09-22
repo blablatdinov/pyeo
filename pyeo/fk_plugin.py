@@ -24,7 +24,7 @@
 
 import ast
 from collections.abc import Generator
-from typing import List, final
+from typing import final
 
 from pyeo.visitor_protocol import VisitorWithProblems
 
@@ -33,7 +33,7 @@ from pyeo.visitor_protocol import VisitorWithProblems
 class FkPlugin:
     """Fake flake8 plugin."""
 
-    def __init__(self, tree: ast.AST, visitors: List[VisitorWithProblems]) -> None:
+    def __init__(self, tree: ast.AST, visitors: list[VisitorWithProblems]) -> None:
         """Ctor."""
         self._tree = tree
         self._visitors = visitors

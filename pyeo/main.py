@@ -41,7 +41,7 @@ from pyeo.visitor_protocol import VisitorWithProblems
 @final
 class Plugin:
     """Flake8 plugin."""
-    
+
     _options: argparse.Namespace
 
     @classmethod
