@@ -26,12 +26,18 @@ import ast
 def class_is_protocol(node: ast.ClassDef) -> bool:
     """Check if a class is a Protocol."""
     for base in node.bases:
-        if isinstance(base, ast.Subscript):
-            if isinstance(base.value, ast.Name) and base.value.id == 'Protocol':
-                return True
-        if isinstance(base, ast.Subscript):
-            if isinstance(base.value, ast.Name) and base.value.id != 'Protocol':
-                continue
+        if (
+            isinstance(base, ast.Subscript)
+            and isinstance(base.value, ast.Name)
+            and base.value.id == 'Protocol'
+        ):
+            return True
+        if (
+            isinstance(base, ast.Subscript)
+            and isinstance(base.value, ast.Name)
+            and base.value.id != 'Protocol'
+        ):
+            continue
         if isinstance(base, ast.Name) and base.id != 'Protocol':
             continue
         if isinstance(base, ast.Name) and base.id == 'Protocol':
@@ -44,12 +50,18 @@ def class_is_protocol(node: ast.ClassDef) -> bool:
 def class_is_typeddict(node: ast.ClassDef) -> bool:
     """Check if a class is a TypedDict."""
     for base in node.bases:
-        if isinstance(base, ast.Subscript):
-            if isinstance(base.value, ast.Name) and base.value.id == 'TypedDict':
-                return True
-        if isinstance(base, ast.Subscript):
-            if isinstance(base.value, ast.Name) and base.value.id != 'TypedDict':
-                continue
+        if (
+            isinstance(base, ast.Subscript)
+            and isinstance(base.value, ast.Name)
+            and base.value.id == 'TypedDict'
+        ):
+            return True
+        if (
+            isinstance(base, ast.Subscript)
+            and isinstance(base.value, ast.Name)
+            and base.value.id != 'TypedDict'
+        ):
+            continue
         if isinstance(base, ast.Name) and base.id != 'TypedDict':
             continue
         if isinstance(base, ast.Name) and base.id == 'TypedDict':
@@ -62,12 +74,18 @@ def class_is_typeddict(node: ast.ClassDef) -> bool:
 def class_is_enum(node: ast.ClassDef) -> bool:
     """Check if a class is an Enum."""
     for base in node.bases:
-        if isinstance(base, ast.Subscript):
-            if isinstance(base.value, ast.Name) and base.value.id.endswith('Enum'):
-                return True
-        if isinstance(base, ast.Subscript):
-            if isinstance(base.value, ast.Name) and not base.value.id.endswith('Enum'):
-                continue
+        if (
+            isinstance(base, ast.Subscript)
+            and isinstance(base.value, ast.Name)
+            and base.value.id.endswith('Enum')
+        ):
+            return True
+        if (
+            isinstance(base, ast.Subscript)
+            and isinstance(base.value, ast.Name)
+            and not base.value.id.endswith('Enum')
+        ):
+            continue
         if isinstance(base, ast.Name) and not base.id.endswith('Enum'):
             continue
         if isinstance(base, ast.Name) and base.id.endswith('Enum'):
@@ -79,21 +97,30 @@ def class_is_enum(node: ast.ClassDef) -> bool:
 
 def class_is_exception(node: ast.ClassDef) -> bool:
     """Check if a class is an Exception."""
-    exception_name = lambda name: name.endswith('Exception') or name.endswith('Error')
     for base in node.bases:
-        if isinstance(base, ast.Subscript):
-            if isinstance(base.value, ast.Name) and exception_name(base.value.id):
-                return True
-        if isinstance(base, ast.Subscript):
-            if isinstance(base.value, ast.Name) and not exception_name(base.value.id):
-                continue
-        if isinstance(base, ast.Name) and not exception_name(base.id):
-            continue
-        if isinstance(base, ast.Name) and exception_name(base.id):
+        if (
+            isinstance(base, ast.Subscript)
+            and isinstance(base.value, ast.Name)
+            and _is_exception_check_name(base.value.id)
+        ):
             return True
-        if isinstance(base, ast.Attribute) and exception_name(base.attr):
+        if (
+            isinstance(base, ast.Subscript)
+            and isinstance(base.value, ast.Name)
+            and not _is_exception_check_name(base.value.id)
+        ):
+            continue
+        if isinstance(base, ast.Name) and not _is_exception_check_name(base.id):
+            continue
+        if isinstance(base, ast.Name) and _is_exception_check_name(base.id):
+            return True
+        if isinstance(base, ast.Attribute) and _is_exception_check_name(base.attr):
             return True
     return False
+
+
+def _is_exception_check_name(name: str) -> bool:
+    return name.endswith(('Exception', 'Error'))
 
 
 def class_is_not_obj_factory(node: ast.ClassDef) -> bool:
