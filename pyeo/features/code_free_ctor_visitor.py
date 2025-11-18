@@ -128,7 +128,14 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         if isinstance(node.func, ast.Name):
             return node.func.id[0].isupper() if node.func.id else False
         elif isinstance(node.func, ast.Attribute):
-            return node.func.attr[0].isupper() if node.func.attr else False
+            return self._is_class_reference(node.func.value)
+        return False
+
+    def _is_class_reference(self, node: ast.expr) -> bool:
+        if isinstance(node, ast.Name):
+            return node.id[0].isupper() if node.id else False
+        elif isinstance(node, ast.Attribute):
+            return self._is_class_reference(node.value)
         return False
 
     def _is_valid_assignment(

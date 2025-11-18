@@ -79,6 +79,21 @@ def test_return_decorated(plugin_run, options_factory):
     assert not got
 
 
+def test_secondary_ctor_calling(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost):',
+            '        """Ctor."""',
+            '        return cls(Dollar.int_ctor(cost))',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())],
+    )
+
+    assert not got
+
+
 def test_iterable_param(plugin_run, options_factory):
     got = plugin_run(
         '\n'.join([
