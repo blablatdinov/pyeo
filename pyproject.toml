@@ -48,7 +48,7 @@ wemake-python-styleguide = "1.4.0"
 flake8-copyright = "0.2.4"
 deltaver = "1.0.0"
 astpretty = "3.0.0"
-pytest = "9.0.0"
+pytest = "9.0.1"
 mypy = "1.18.2"
 types-flake8 = "7.3.0.20250622"
 
