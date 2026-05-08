@@ -803,14 +803,14 @@ typing-extensions = ">=3.7.4.3"
 
 [[package]]
 name = "types-flake8"
-version = "7.3.0.20250622"
+version = "7.3.0.20260508"
 description = "Typing stubs for flake8"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "types_flake8-7.3.0.20250622-py3-none-any.whl", hash = "sha256:6d5a10d3578ec78045a99b599cf91dbffc2eca7a3820df1bfc7cd959e81d4253"},
-    {file = "types_flake8-7.3.0.20250622.tar.gz", hash = "sha256:caf6d06f2e5c40495947db230f127b85b57ada61d299c6ce043cc6d68eb2c749"},
+    {file = "types_flake8-7.3.0.20260508-py3-none-any.whl", hash = "sha256:41356a7f022feee1bb33a3a9a0ec97a2297d4dd8b6228c11589a5aa83f755bde"},
+    {file = "types_flake8-7.3.0.20260508.tar.gz", hash = "sha256:c3103f0afe52e2bb52911e816216807af367d3d1d2cc02a7ffa15062b79ba854"},
 ]
 
 [package.dependencies]
@@ -860,4 +860,4 @@ pygments = ">=2.19,<3.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "43fd895ea5702ec9f6282eb4f370da02072b526511351710b9f47e8a0e98f71a"
+content-hash = "0392e198834153c3b1d5df915ed4c3937747fda03965c770c0e9a9aa6dbf1bb6"
