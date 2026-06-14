@@ -29,7 +29,7 @@ wemake-python-styleguide = "1.6.2"
 flake8-copyright = "0.2.4"
 deltaver = "1.0.1"
 astpretty = "3.0.0"
-pytest = "9.0.3"
+pytest = "9.1.0"
 mypy = "2.1.0"
 types-flake8 = "7.3.0.20260508"
 
