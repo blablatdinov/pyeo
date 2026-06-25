@@ -24,7 +24,7 @@ flake8-no-private-methods = "*"
 flake8-one-class = "*"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "0.15.19"
+ruff = "0.15.20"
 wemake-python-styleguide = "1.6.2"
 flake8-copyright = "0.2.4"
 deltaver = "1.0.1"
