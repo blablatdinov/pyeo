@@ -31,7 +31,7 @@ deltaver = "1.0.2"
 astpretty = "3.0.0"
 pytest = "9.1.1"
 mypy = "2.3.1"
-types-flake8 = "7.3.0.20260508"
+types-flake8 = "7.4.0.20260923"
 
 [build-system]
 requires = ["poetry-core"]
