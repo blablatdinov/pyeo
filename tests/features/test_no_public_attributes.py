@@ -48,8 +48,8 @@ def test_protocol_with_public_attributes(plugin_run, base_class, options_factory
     )
 
     assert got == [
-        (2, 4, 'PEO300 class attribute "name" should be private'),
-        (3, 4, 'PEO300 class attribute "value" should be private'),
+        (2, 4, 'PEO301 class attribute "name" should be private'),
+        (3, 4, 'PEO301 class attribute "value" should be private'),
     ]
 
 
@@ -100,8 +100,8 @@ def test_invalid_public_attributes_assign(plugin_run, options_factory):
     )
 
     assert got == [
-        (2, 4, 'PEO300 class attribute "name" should be private'),
-        (3, 4, 'PEO300 class attribute "value" should be private'),
+        (2, 4, 'PEO301 class attribute "name" should be private'),
+        (3, 4, 'PEO301 class attribute "value" should be private'),
     ]
 
 
@@ -119,8 +119,8 @@ def test_invalid_public_attributes_ann_assign(plugin_run, options_factory):
     )
 
     assert got == [
-        (2, 4, 'PEO300 class attribute "name" should be private'),
-        (3, 4, 'PEO300 class attribute "value" should be private'),
+        (2, 4, 'PEO301 class attribute "name" should be private'),
+        (3, 4, 'PEO301 class attribute "value" should be private'),
     ]
 
 
@@ -140,8 +140,8 @@ def test_mixed_public_private_attributes(plugin_run, options_factory):
     )
 
     assert got == [
-        (3, 4, 'PEO300 class attribute "public_attr" should be private'),
-        (5, 4, 'PEO300 class attribute "public_typed" should be private'),
+        (3, 4, 'PEO301 class attribute "public_attr" should be private'),
+        (5, 4, 'PEO301 class attribute "public_typed" should be private'),
     ]
 
 
