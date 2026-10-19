@@ -11,6 +11,7 @@ from typing import final
 from flake8.options.manager import OptionManager
 
 from pyeo.features.code_free_ctor_visitor import CodeFreeCtorVisitor
+from pyeo.features.forbidden_decorator_visitor import ForbiddenDecoratorVisitor
 from pyeo.features.no_er_suffix import NoErSuffix
 from pyeo.features.no_getter_methods import NoGetterMethodsVisitor
 from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
@@ -40,6 +41,7 @@ class Plugin:
             NoPublicAttributesVisitor(self._options),
             NoPropertyDecoratorVisitor(self._options),
             NoGetterMethodsVisitor(self._options),
+            ForbiddenDecoratorVisitor(self._options),
         ]
 
     @classmethod
