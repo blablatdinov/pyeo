@@ -83,14 +83,7 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
     def _is_valid_cls_call(self, node: ast.Call, func_node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
         if not isinstance(node.func, ast.Name) or node.func.id != 'cls':
             return False
-        arg_names = {arg.arg for arg in func_node.args.args}
-        if func_node.args.vararg:
-            arg_names.add(func_node.args.vararg.arg)
-        if func_node.args.kwarg:
-            arg_names.add(func_node.args.kwarg.arg)
-        if func_node.args.kwonlyargs:
-            for kwarg in func_node.args.kwonlyargs:
-                arg_names.add(kwarg.arg)
+        arg_names = self._argument_names(func_node)
         for arg in node.args:
             if isinstance(arg, ast.Name) and arg.id in arg_names:
                 continue
@@ -104,6 +97,12 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
             else:
                 return False
         return True
+
+    def _argument_names(self, func_node: ast.FunctionDef | ast.AsyncFunctionDef) -> set[str]:
+        arguments = func_node.args
+        regular = [*arguments.posonlyargs, *arguments.args, *arguments.kwonlyargs]
+        special = [arguments.vararg, arguments.kwarg]
+        return {arg.arg for arg in (*regular, *special) if arg}
 
     def _is_constructor_call(self, node: ast.Call) -> bool:
         if isinstance(node.func, ast.Name):
@@ -124,7 +123,7 @@ class CodeFreeCtorVisitor(ast.NodeVisitor):
         node: ast.Assign | ast.AnnAssign,
         func_node: ast.FunctionDef | ast.AsyncFunctionDef,
     ) -> bool:
-        arg_names = {arg.arg for arg in func_node.args.args}
+        arg_names = self._argument_names(func_node)
         if isinstance(node, ast.Assign):
             for target in node.targets:
                 if (

@@ -485,3 +485,47 @@ def test_regular_method_not_affected(plugin_run, options_factory):
     )
 
     assert not got
+
+
+@pytest.mark.parametrize(('signature', 'assigned'), [
+    ('self, *, cost', 'cost'),
+    ('self, cost, /', 'cost'),
+    ('self, *costs', 'costs'),
+    ('self, **costs', 'costs'),
+])
+def test_init_assigns_any_kind_of_argument(plugin_run, options_factory, signature, assigned):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            f'    def __init__({signature}):',
+            f'        self._cost = {assigned}',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())],
+    )
+
+    assert not got
+
+
+def test_classmethod_calls_cls_with_positional_only_argument(plugin_run, options_factory):
+    got = plugin_run(
+        '\n'.join([
+            'class HttpHouse(House):',
+            '',
+            '    def __init__(self, cost):',
+            '        self._cost = cost',
+            '',
+            '    @classmethod',
+            '    def secondary_ctor(cls, cost, /):',
+            '        return cls(cost)',
+            '',
+            '    def area(self) -> int:',
+            '        return 5',
+        ]),
+        [CodeFreeCtorVisitor(options_factory())],
+    )
+
+    assert not got
