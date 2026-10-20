@@ -57,7 +57,7 @@ class NoPublicAttributesVisitor(ast.NodeVisitor):
                     self.problems.append((
                         node.lineno,
                         node.col_offset,
-                        f'PEO300 class attribute "{target.id}" should be private',
+                        f'PEO301 class attribute "{target.id}" should be private',
                     ))
 
     def _check_ann_assign_attributes(self, node: ast.AnnAssign) -> None:
@@ -70,5 +70,5 @@ class NoPublicAttributesVisitor(ast.NodeVisitor):
                 self.problems.append((
                     node.lineno,
                     node.col_offset,
-                    f'PEO300 class attribute "{node.target.id}" should be private',
+                    f'PEO301 class attribute "{node.target.id}" should be private',
                 ))
