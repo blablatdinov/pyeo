@@ -170,13 +170,17 @@ TODO
 
 ## No reflection
 
-TODO
+An object should be asked to do something, not asked what it is: a check of
+its type makes the caller decide on its behalf, and every new type means one
+more branch in someone else's code.
 
-Prohibit next function calls:
-- `isinstance`
-- `type`
-- `issubclass`
-- `hasattr`
+`PEO700` reports, everywhere in the code:
+- calls to `isinstance`, `issubclass`, `hasattr`, `getattr`, `setattr` and `delattr`
+- `type` with one argument; `type(name, bases, namespace)` builds a class and stays allowed
+- `typing.cast` and `cast`
+- class patterns of `match` statements, such as `case list():`
+
+Where reflection cannot be avoided, say so with `# noqa: PEO700` on that line.
 
 ## No public methods without a contract
 

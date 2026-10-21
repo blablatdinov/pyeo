@@ -17,6 +17,7 @@ from pyeo.features.no_getter_methods import NoGetterMethodsVisitor
 from pyeo.features.no_mutable_objects import NoMutableObjectsVisitor
 from pyeo.features.no_property_decorator import NoPropertyDecoratorVisitor
 from pyeo.features.no_public_attributes import NoPublicAttributesVisitor
+from pyeo.features.no_reflection import NoReflectionVisitor
 from pyeo.visitor_protocol import VisitorWithProblems
 
 
@@ -42,6 +43,7 @@ class Plugin:
             NoPropertyDecoratorVisitor(self._options),
             NoGetterMethodsVisitor(self._options),
             ForbiddenDecoratorVisitor(self._options),
+            NoReflectionVisitor(self._options),
         ]
 
     @classmethod
