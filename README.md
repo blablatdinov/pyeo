@@ -76,9 +76,9 @@ mypy file.py && flake8 file.py
 
   - [No readers, parsers, controllers, sorters, and so on](#no-er-suffix) ([why?](https://www.yegor256.com/2015/03/09/objects-end-with-er.html))
 
-  - [No static methods, not even private ones](no-static-methods) ([why?](http://www.yegor256.com/2017/02/07/private-method-is-new-class.html))
+  - [No static methods, not even private ones](#no-static-methods) ([why?](http://www.yegor256.com/2017/02/07/private-method-is-new-class.html))
 
-  - [No instanceof, type casting, or reflection](no-reflection) ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
+  - [No instanceof, type casting, or reflection](#no-reflection) ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
 
   - [No public methods without a contract (interface)](#no-public-methods-without-a-contract) ([why?](https://www.yegor256.com/2014/11/20/seven-virtues-of-good-object.html#2-he-works-by-contracts))
 
@@ -166,7 +166,15 @@ We check you class name not contain `-er` or `(C|c)lient` suffix by check in
 
 ## No static methods
 
-TODO
+A static method is a procedure that happens to live in a class: there is no
+object behind it, so everything it works on arrives as arguments, which is
+exactly what objects exist to hide. A private method is no better: it is an
+object that never got a class of its own.
+
+`PEO400` reports every method decorated with `@staticmethod`, synchronous or
+`async`. Private methods are reported as `NPM100` by
+[flake8-no-private-methods](https://github.com/blablatdinov/flake8-no-private-methods),
+which comes with pyeo.
 
 ## No reflection
 
